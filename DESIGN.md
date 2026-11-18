@@ -1,13 +1,13 @@
-# Sadie's Pooper: design v2 (draft for Simon's approval)
+# Sadie's Pooper: design v2
 
-From the interviews on 2026-11-17 and 2026-11-18. This replaces the first draft. Nothing gets built until Simon approves this document. The numbers were approved on 2026-11-18.
+From the interviews on 2026-11-17 and 2026-11-18. This replaces the first draft. Simon approved it and the numbers on 2026-11-18; the first version went live that day. Later rulings are dated where they appear.
 
 ## What it is
-A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead pooping brown swirled poop piles. Sadie, with long curly blonde hair, chases after them and scoops them up. The screen scrolls on its own from the living room out to the garden gate in about 2 minutes. It's built for phones held sideways and also plays on a computer. It's one `index.html` deployed on Vercel from GitHub, like Linkshot.
+A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead pooping brown swirled poop piles. Sadie, with long curly blonde hair, chases after them and scoops them up. The screen scrolls on its own from the living room out to the garden gate in about 2 minutes. It's built for phones held sideways and also plays on a computer. It always plays landscape (Simon, 2026-11-18): on a phone held upright the whole game, menu included, is turned sideways so it starts horizontal; turning the phone straightens it out. On Android it also goes full screen and locks sideways when a game starts. It's one `index.html` deployed on Vercel from GitHub, like Linkshot.
 
 ## Feel
 - Silly and mild: cute brown swirl poops, stink lines, no splatter.
-- Bold cartoon art: thick outlines, bright flat colours, stretchy expressions.
+- Comic-book art (Simon, 2026-11-18: "more comic book style"): heavy ink outlines, hard-edged shadows with halftone dots, a blue rim light on Ky's glossy black fur, a Ben-Day-dot sky, a black panel frame, and sound effects lettered in bursts and speech bubbles (PLOP!, SCOOP!, PFFFT!, BONK!, WOOF!).
 - Ky's dash is a **fart boost**, with a honk and a little brown cloud. The cloud is just for looks.
 - Sadie's dash is a **hair-whoosh**: her curly hair spins like a propeller.
 - Tapping Ky makes Ky bark.
@@ -31,6 +31,7 @@ A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead poopin
 - **Sadie's buttons:** Jump, Hair-whoosh dash. Scooping is automatic: run over a poop.
 - **Keyboard:** Sadie uses A/D to move, W to jump and S to dash. Ky uses the arrow keys to move, ↑ to jump, ↓ to poop and Right Shift to fart-dash.
 - Bump into toys or flower pots on the ground and you tumble back.
+- **Ky always stays in front of Sadie** (Simon, 2026-11-18). She can't get past him: running or whooshing into him stops her at his tail. If he tumbles back into her he pushes her back, and if she has nowhere left to go he gets shoved forward.
 
 ## Scoring: "poop tug"
 - Every poop Sadie scoops is a point for Sadie. Every poop she misses (it scrolls off behind her) is a point for Ky.
@@ -45,7 +46,7 @@ A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead poopin
 - **Ky's poop supply:** starts at 3, +1 every 4 seconds, up to 5.
 
 ## Art
-Drawn by Claude as bold-outline vector cartoons (SVG), with no image model (Simon, 2026-11-18). This spends Claude tokens, not ComfyUI time. Every part of the art is drawn this way: Sadie, Ky, the poop, the props, the house and the garden. Drawing in vector lets the parts animate: legs run, hair whooshes, the fart cloud puffs, ears bounce.
+Drawn by Claude as comic-book-style vector cartoons (SVG shapes inked and shaded in code), with no image model (Simon, 2026-11-18). This spends Claude tokens, not ComfyUI time. Every part of the art is drawn this way: Sadie, Ky, the poop, the props, the house and the garden. Drawing in vector lets the parts animate: legs run, hair whooshes, the fart cloud puffs, ears bounce.
 
 - **Sadie** (from Simon's photos, 2026-11-18): drawn as an adult woman, not childish (Simon, 2026-11-18, changed from a kid). Extremely long, crimped-wavy, golden blonde hair falling past her waist; this is her signature. (The photos are paler, almost platinum; Simon prefers golden in a cartoon.) Freckles, blue eyes, an oversized denim jacket over a striped top, dark navy flared jeans.
 - **Ky** (from Simon's photos, 2026-11-18): a lean, medium-sized dog with very dark chocolate-black, short, glossy fur. Huge upright pointy ears are the signature feature. A slim, narrow muzzle, warm amber-brown eyes, and a little grey on the chin. No white chest and no tan markings.

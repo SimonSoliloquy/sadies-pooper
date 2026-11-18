@@ -7,22 +7,26 @@
 <meta name="description" content="A silly 1v1 side-on runner: Ky the dog poops brown swirls in sneaky spots, Sadie chases after them and scoops, from the living room to the garden gate.">
 <meta name="theme-color" content="#7cc95a">
 <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💩</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
 <style>
-  :root { --girl: #e0559a; --dog: #2b211d; --ink: #1d1a1a; --paper: #fffaf0; }
+  :root { --girl: #e0559a; --dog: #2b211d; --ink: #120e0e; --paper: #fffaf0; --cap: #fff27a; --comic: Bangers, Impact, "Arial Black", system-ui, sans-serif; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #2b2420; font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; color: var(--ink); touch-action: none; user-select: none; -webkit-user-select: none; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #120e0e; font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; color: var(--ink); touch-action: none; user-select: none; -webkit-user-select: none; }
+  /* everything lives in #app; on a phone held upright the script turns #app sideways so the game always plays landscape */
+  #app { position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; transform-origin: 0 0; }
   #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
   button { font: inherit; cursor: pointer; }
   [hidden] { display: none !important; }
 
   #hud { position: fixed; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top) + 6px) 52px 0; display: grid; grid-template-columns: 1fr minmax(110px, 1.3fr) 1fr; gap: 8px; align-items: start; pointer-events: none; max-width: 820px; margin: 0 auto; z-index: 3; }
-  .side { background: rgba(255,250,240,.94); border: 3px solid var(--ink); border-radius: 14px; padding: 3px 10px 4px; min-width: 0; }
-  .side.girl { box-shadow: inset 6px 0 0 var(--girl); padding-left: 14px; }
-  .side.dog { box-shadow: inset -6px 0 0 #6b5a52; text-align: right; padding-right: 14px; }
-  .who { font-size: 11px; font-weight: 900; letter-spacing: .04em; text-transform: uppercase; opacity: .75; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .pts { font-size: 26px; font-weight: 900; line-height: 1; font-variant-numeric: tabular-nums; }
+  .side { background: var(--cap); border: 3px solid var(--ink); border-radius: 3px; padding: 3px 10px 4px; min-width: 0; box-shadow: 4px 4px 0 var(--ink); }
+  .side.girl { box-shadow: inset 7px 0 0 var(--girl), 4px 4px 0 var(--ink); padding-left: 15px; }
+  .side.dog { box-shadow: inset -7px 0 0 #3a2c27, 4px 4px 0 var(--ink); text-align: right; padding-right: 15px; }
+  .who { font-family: var(--comic); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+  .pts { font-family: var(--comic); font-size: 32px; line-height: .95; letter-spacing: .03em; font-variant-numeric: tabular-nums; }
   .sub { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.2em; }
-  .mid { text-align: center; background: rgba(255,250,240,.94); border: 3px solid var(--ink); border-radius: 14px; padding: 4px 10px 5px; }
+  .mid { text-align: center; background: #fffaf0; border: 3px solid var(--ink); border-radius: 3px; padding: 4px 10px 5px; box-shadow: 4px 4px 0 var(--ink); }
   .track { position: relative; height: 10px; border-radius: 5px; border: 2px solid var(--ink); background: linear-gradient(90deg, #d9a066 0 27%, #b9d7de 27% 36%, #8fd16a 36%); margin: 4px 2px 3px; }
   .track i { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2.5px solid var(--ink); }
   #tSadie { background: var(--girl); } #tKy { background: var(--dog); }
@@ -32,13 +36,14 @@
   #pause { left: 8px; } #mute { right: 8px; }
 
   .screen { position: fixed; inset: 0; display: grid; place-items: center; padding: 14px; background: rgba(43,36,32,.45); z-index: 10; overflow-y: auto; }
-  .card { background: var(--paper); border: 4px solid var(--ink); border-radius: 22px; padding: 16px 18px 12px; width: min(620px, 100%); box-shadow: 0 7px 0 var(--ink); text-align: center; margin: auto; }
-  h1 { margin: 0; font-size: clamp(32px, 8vw, 48px); line-height: 1; letter-spacing: -.02em; -webkit-text-stroke: 1.5px var(--ink); }
-  h1 .s { color: var(--girl); } h1 .p { color: #8a5530; }
+  .card { background: var(--paper) radial-gradient(rgba(224,85,154,.13) 1.6px, transparent 1.9px) 0 0 / 9px 9px; border: 4px solid var(--ink); border-radius: 4px; padding: 16px 18px 12px; width: min(620px, 100%); box-shadow: 8px 8px 0 var(--ink); text-align: center; margin: auto; }
+  h1 { margin: 0; font-family: var(--comic); font-weight: 400; font-size: clamp(40px, 9vw, 60px); line-height: 1; letter-spacing: .03em; -webkit-text-stroke: 2px var(--ink); text-shadow: 4px 4px 0 var(--ink); transform: rotate(-2deg); }
+  h1 .s { color: var(--girl); } h1 .p { color: #ffcf2e; }
+  h2 { font-family: var(--comic); font-weight: 400; letter-spacing: .04em; }
   .tag { margin: 6px 0 10px; font-weight: 800; opacity: .85; }
   .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .modes button, .btn { border: 3px solid var(--ink); border-radius: 16px; padding: 10px 8px; font-weight: 900; font-size: 17px; color: #fff; box-shadow: 0 4px 0 var(--ink); line-height: 1.15; }
-  .modes button small { display: block; font-weight: 800; font-size: 12px; opacity: .9; margin-top: 3px; }
+  .modes button, .btn { border: 3px solid var(--ink); border-radius: 6px; padding: 9px 8px; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 22px; color: #fff; -webkit-text-stroke: 1px var(--ink); box-shadow: 4px 4px 0 var(--ink); line-height: 1.1; }
+  .modes button small { display: block; font-family: ui-rounded, system-ui, sans-serif; letter-spacing: 0; -webkit-text-stroke: 0; font-weight: 800; font-size: 12px; opacity: .9; margin-top: 3px; }
   .modes button:active, .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
   .m-girl { background: var(--girl); } .m-dog { background: var(--dog); } .m-duo { background: #8a5530; }
   .diff { display: flex; justify-content: center; gap: 6px; margin: 10px 0 2px; align-items: center; font-weight: 900; font-size: 14px; flex-wrap: wrap; }
@@ -69,10 +74,9 @@
   #nick { font: inherit; font-size: 16px; padding: 7px 10px; border-radius: 12px; border: 2.5px solid var(--ink); width: 170px; background: #fff; }
   #rank { font-size: 13px; font-weight: 800; margin: 4px 0; min-height: 1em; }
 
-  #toast { position: fixed; left: 50%; top: 24%; transform: translate(-50%, -50%); background: var(--paper); color: var(--ink); border: 3px solid var(--ink); padding: 6px 16px; border-radius: 999px; font-weight: 900; font-size: 16px; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap; z-index: 5; max-width: 94vw; overflow: hidden; text-overflow: ellipsis; }
+  #toast { position: fixed; left: 50%; top: 26%; transform: translate(-50%, -50%); background: var(--cap); color: var(--ink); border: 3px solid var(--ink); padding: 5px 14px; border-radius: 3px; box-shadow: 4px 4px 0 var(--ink); font-weight: 900; font-size: 16px; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap; z-index: 5; max-width: 94%; overflow: hidden; text-overflow: ellipsis; }
   #toast.on { opacity: 1; }
-  #count { position: fixed; inset: 0; display: grid; place-items: center; font-size: 110px; font-weight: 900; color: #fff; -webkit-text-stroke: 4px var(--ink); pointer-events: none; z-index: 4; }
-  #rotate { position: fixed; left: 50%; bottom: 128px; transform: translateX(-50%); background: var(--paper); border: 3px solid var(--ink); padding: 5px 14px; border-radius: 999px; font-weight: 900; font-size: 13px; z-index: 4; pointer-events: none; white-space: nowrap; }
+  #count { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--comic); font-size: 130px; color: #ffcf2e; -webkit-text-stroke: 4px var(--ink); text-shadow: 7px 7px 0 var(--ink); pointer-events: none; z-index: 4; }
 
   #pads { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
   .zone { position: absolute; top: 0; bottom: 0; pointer-events: auto; touch-action: none; }
@@ -80,8 +84,8 @@
   .slide { position: fixed; width: 120px; height: 26px; margin: -13px 0 0 -60px; border-radius: 13px; background: rgba(255,255,255,.35); border: 3px solid rgba(29,26,26,.6); pointer-events: none; }
   .slide b { position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(255,255,255,.9); border: 3px solid var(--ink); }
   .hint { position: absolute; font-size: 13px; font-weight: 900; color: #fff; -webkit-text-stroke: .6px var(--ink); text-shadow: 0 2px 0 rgba(0,0,0,.35); pointer-events: none; white-space: nowrap; }
-  .pbtn { position: absolute; border-radius: 50%; border: 3px solid var(--ink); color: #fff; font-weight: 900; font-size: 14px; box-shadow: 0 4px 0 var(--ink); display: grid; place-items: center; touch-action: none; line-height: 1.05; opacity: .93; padding: 0; }
-  .pbtn.big { width: 82px; height: 82px; font-size: 16px; } .pbtn.small { width: 64px; height: 64px; }
+  .pbtn { position: absolute; border-radius: 50%; border: 3px solid var(--ink); color: #fff; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 17px; -webkit-text-stroke: .8px var(--ink); box-shadow: 0 4px 0 var(--ink); display: grid; place-items: center; touch-action: none; line-height: 1.05; opacity: .93; padding: 0; }
+  .pbtn.big { width: 82px; height: 82px; font-size: 20px; } .pbtn.small { width: 64px; height: 64px; }
   .pbtn.girl { background: var(--girl); } .pbtn.dog { background: #4a3a33; } .pbtn.poop { background: #8a5530; } .pbtn.fart { background: #8b8a2e; }
   .pbtn.cool { opacity: .4; }
   .pbtn.on { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
@@ -90,6 +94,7 @@
 </style>
 </head>
 <body>
+<div id="app">
 <canvas id="c"></canvas>
 
 <div id="hud" hidden>
@@ -102,7 +107,6 @@
 <div id="pads"></div>
 <div id="toast"></div>
 <div id="count" hidden></div>
-<div id="rotate" hidden>Turn your phone sideways for a bigger view</div>
 
 <div class="screen" id="menu">
   <div class="card">
@@ -118,7 +122,7 @@
       <p><b>Poop tug:</b> every poop <b class="s">Sadie</b> scoops is a point for her; every one she misses is a point for <b class="k">Ky</b>. A poop on a sneaky spot (Sadie's shoes, the couch, the pink roses, the vegetable garden) is a big one worth 3. Most points at the garden gate wins.</p>
       <p><b class="k">Ky</b>: Jump, Poop, and a fart-boost dash. 3 poops to start, one more every 4 seconds. 🍗 scraps: +2 poops. 🌶️ chilli: next poop is a giant golden swirl worth 5.</p>
       <p><b class="s">Sadie</b>: Jump and a hair-whoosh dash; run over poop to scoop it. 🦮 leash: snaps onto Ky, no pooping for 4 seconds. 🧹 pooper-scooper: longer reach for 6 seconds.</p>
-      <p>Slide your thumb left and right on your side of the screen to push ahead or fall back. Bump a toy or a flower pot and you tumble. Tap Ky to make Ky bark. Hard ×1.5 and Easy ×0.75 on the high scores.</p>
+      <p>Slide your thumb left and right on your side of the screen to push ahead or fall back. Ky always runs ahead: Sadie can't get past him. Bump a toy or a flower pot and you tumble. Tap Ky to make Ky bark. Hard ×1.5 and Easy ×0.75 on the high scores.</p>
       <p class="keys">Keys. Sadie: A/D move · W jump · S whoosh. Ky: ←/→ move · ↑ jump · ↓ poop · Right Shift fart. Alone: arrows or WASD, Space jump, Shift dash, Enter poop.</p>
     </div>
     <div class="boards">
@@ -150,9 +154,10 @@
     <p class="by">Built by <a href="https://simonsoliloquy.com" target="_blank" rel="noopener">simonsoliloquy.com</a></p>
   </div>
 </div>
+</div>
 
 <script type="module">
-const VERSION = 'v2026-11-18b';
+const VERSION = 'v2026-11-18c';
 const $ = id => document.getElementById(id);
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -219,15 +224,27 @@ const ZONE_NAME = { couch: 'the couch', shoes: "Sadie's shoes", roses: 'the rose
 // ---------- canvas and view ----------
 const cv = $('c'), ctx = cv.getContext('2d');
 const V = { w: 640, h: 360, scale: 1, floor: 46, dpr: 1 };
+// The game always plays landscape (Simon, 2026-11-18): a touch phone held upright gets the whole game turned sideways,
+// so it starts horizontal; turning the phone then just straightens it out. APP is the game's own size in CSS pixels.
+const APP = { w: 800, h: 450, rot: false };
+const toApp = e => APP.rot ? [e.clientY, APP.h - e.clientX] : [e.clientX, e.clientY];   // screen point -> game point
 function resize() {
-  const dpr = Math.min(devicePixelRatio || 1, 2), w = innerWidth || 800, h = innerHeight || 450;   // a hidden page can report 0
+  const dpr = Math.min(devicePixelRatio || 1, 2), pw = innerWidth || 800, ph = innerHeight || 450;   // a hidden page can report 0
+  APP.rot = isTouch && ph > pw;
+  const w = APP.rot ? ph : pw, h = APP.rot ? pw : ph;
+  APP.w = w; APP.h = h;
+  Object.assign($('app').style, APP.rot ? { width: w + 'px', height: h + 'px', transform: `translateX(${pw}px) rotate(90deg)` } : { width: '100%', height: '100%', transform: '' });
   V.dpr = dpr; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   const aspect = w / h;
   V.h = 360; V.w = V.h * aspect;
   if (V.w < 640) { V.w = 640; V.h = V.w / aspect; }
   V.scale = h / V.h * dpr;
-  $('rotate').hidden = !(S.phase === 'play' || S.phase === 'count') || aspect > 1;
   buildPads();
+}
+// on Android, going full screen also lets the page lock the phone sideways (iPhones keep the turned-around layout)
+function goLandscape() {
+  if (!isTouch || document.fullscreenElement || !document.documentElement.requestFullscreen) return;
+  document.documentElement.requestFullscreen({ navigationUI: 'hide' }).then(() => screen.orientation?.lock?.('landscape')).catch(() => {});
 }
 const SY = y => (V.h - V.floor - y) * V.scale;          // height above the floor -> canvas y
 const SX = x => (x - S.cam) * V.scale;                    // world x -> canvas x
@@ -236,22 +253,71 @@ const SX = x => (x - S.cam) * V.scale;                    // world x -> canvas x
 // ART: everything is drawn in code as bold-outline cartoons (Simon, 2026-11-18). Shapes come
 // from art/svg (the approved test drawings); limbs, hair, ears and tail are posed every frame.
 // ============================================================================================
-const INK = '#1d1a1a', KINK = '#120d0b';
+const INK = '#120e0e', KINK = '#0b0808';
 const P = s => new Path2D(s);
+// ----- comic-book inking (Simon, 2026-11-18: "more comic book style") -----
+// Light comes from the upper right, ahead of the runners. Big shapes get a hard-edged shadow on the lower left with
+// halftone dots in it, glossy black fur gets a blue rim light on the upper right, and the outer ink is heavy.
+const LIGHT = [7, -8];
+const DOTS = {};
+function dotsOf(color, px = 5) {   // a halftone pattern whose dots are about the same size on screen at any zoom
+  let pat = DOTS[color];
+  if (!pat) {
+    const c = document.createElement('canvas'); c.width = c.height = 12; const g = c.getContext('2d'); g.fillStyle = color;
+    for (const [x, y] of [[3, 3], [9, 9]]) { g.beginPath(); g.arc(x, y, 2, 0, 7); g.fill(); }
+    pat = DOTS[color] = ctx.createPattern(c, 'repeat');
+  }
+  const m = ctx.getTransform(), s = Math.hypot(m.a, m.b) || 1;
+  pat.setTransform(new DOMMatrix().scale(px * V.dpr / (12 * s)));
+  return pat;
+}
+function crescent(path, dx, dy, ...fills) {   // paint the part of a shape that a copy of it moved by (dx, dy) leaves uncovered
+  const c = new Path2D(); c.rect(-1e4, -1e4, 2e4, 2e4); c.addPath(path, new DOMMatrix([1, 0, 0, 1, dx, dy]));
+  ctx.save(); ctx.clip(path); ctx.clip(c, 'evenodd'); for (const f of fills) { ctx.fillStyle = f; ctx.fill(path); } ctx.restore();
+}
+const moved = (path, dx, dy) => { const q = new Path2D(); q.addPath(path, new DOMMatrix([1, 0, 0, 1, dx, dy])); return q; };
+// fill a shape comic-style: shadow (with halftone) where a copy moved toward the light doesn't reach, a rim light where a
+// copy moved away from it doesn't reach, flat colour between, then the ink. Works for shapes made of overlapping parts.
+function comic(path, base, shade, lw = 6, o = {}) {
+  const k = o.k || 1, lx = LIGHT[0] * k, ly = LIGHT[1] * k;
+  if (!shade && !o.rim) { ctx.fillStyle = base; ctx.fill(path); }
+  else {
+    ctx.save(); ctx.clip(path);
+    if (shade) { ctx.fillStyle = shade; ctx.fill(path); ctx.fillStyle = dotsOf(o.dot || 'rgba(0,0,0,.2)'); ctx.fill(path); } else { ctx.fillStyle = base; ctx.fill(path); }
+    const lit = shade ? moved(path, lx, ly) : path;
+    if (o.rim) { ctx.fillStyle = o.rim; ctx.fill(lit); ctx.clip(moved(path, -lx * .55, -ly * .55)); }
+    ctx.fillStyle = base; ctx.fill(lit);
+    ctx.restore();
+  }
+  if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = o.ink || INK; ctx.stroke(path); }
+}
+const ellP = (x, y, rx, ry, rot = 0) => { const p = new Path2D(); p.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2); return p; };
+const rrP = (x, y, w, h, r) => { const p = new Path2D(); p.roundRect(x, y, w, h, r); return p; };
+function speedLines(x, y, h, dir = 1) {   // ink streaks trailing behind something fast
+  ctx.save(); ctx.lineCap = 'round';
+  for (let i = 0; i < 5; i++) {
+    const yy = y - h * (.15 + i * .17), len = (40 + hash(i + Math.floor(S.t * 12)) * 50) * V.scale, x0 = x - dir * (20 + hash(i * 3) * 18) * V.scale;
+    ctx.strokeStyle = INK; ctx.lineWidth = 2.6 * V.scale; ctx.beginPath(); ctx.moveTo(x0, SY(yy)); ctx.lineTo(x0 - dir * len, SY(yy)); ctx.stroke();
+  }
+  ctx.restore();
+}
 function fs(path, fill, lw = 5, stroke = INK) { if (fill) { ctx.fillStyle = fill; ctx.fill(path); } if (lw) { ctx.lineWidth = lw; ctx.strokeStyle = stroke; ctx.stroke(path); } }
 function line(path, color, lw) { ctx.lineWidth = lw; ctx.strokeStyle = color; ctx.stroke(path); }
 function circ(x, y, r, fill, lw = 5, stroke = INK) { const p = new Path2D(); p.arc(x, y, r, 0, Math.PI * 2); fs(p, fill, lw, stroke); }
 function ell(x, y, rx, ry, fill, lw = 5, stroke = INK, rot = 0) { const p = new Path2D(); p.ellipse(x, y, rx, ry, rot, 0, Math.PI * 2); fs(p, fill, lw, stroke); }
 function rr(x, y, w, h, r, fill, lw = 2.6, stroke = INK) { const p = new Path2D(); p.roundRect(x, y, w, h, r); fs(p, fill, lw, stroke); }
 const at = (o, len, ang) => [o[0] + Math.sin(ang) * len, o[1] + Math.cos(ang) * len];
-function limb(pts, w, color, ink = INK, out = 9) {   // a bendy limb: a wide dark stroke under a coloured one
+function limb(pts, w, color, ink = INK, out = 11, shade = null) {   // a bendy limb: a wide ink stroke under a coloured one
   const p = new Path2D(); p.moveTo(pts[0][0], pts[0][1]);
   if (pts.length === 3) p.quadraticCurveTo(pts[1][0], pts[1][1], pts[2][0], pts[2][1]); else for (const q of pts.slice(1)) p.lineTo(q[0], q[1]);
   ctx.lineCap = 'round'; ctx.lineJoin = 'round';
-  line(p, ink, w + out); line(p, color, w);
+  line(p, ink, w + out);
+  if (!shade) { line(p, color, w); return; }
+  line(p, shade, w);   // shadow side, then the lit side nudged toward the light
+  ctx.save(); ctx.translate(w * .2, -w * .18); line(p, color, w * .62); ctx.restore();
 }
 // a 2-joint limb drawn through its middle joint (quadratic through the knee)
-function limb3(a, b, c, w, color, ink = INK) { limb([a, [2 * b[0] - (a[0] + c[0]) / 2, 2 * b[1] - (a[1] + c[1]) / 2], c], w, color, ink); }
+function limb3(a, b, c, w, color, ink = INK, shade = null) { limb([a, [2 * b[0] - (a[0] + c[0]) / 2, 2 * b[1] - (a[1] + c[1]) / 2], c], w, color, ink, 11, shade); }
 
 // ----- Sadie (art units from art/svg/sadie.svg; feet at 180,380) -----
 const SAD = {
@@ -276,25 +342,27 @@ const SAD = {
   lock: P('M170 96 Q182 108 172 120 Q186 132 176 146 Q190 158 180 172 Q194 184 184 198 Q174 192 170 180 Q160 170 166 158 Q154 146 164 134 Q152 122 162 110 Z'),
   shine: P('M168 50 C186 44 204 48 216 58'),
 };
-const HAIR = '#f2c14e', HAIR2 = '#c98f1f', SKIN = '#f8d8bd', SKIN2 = '#f0c4a4';
+const HAIR = '#f6c445', HAIR2 = '#c7861a', HAIR_HI = '#fff4bf', SKIN = '#fbd9bd', SKIN2 = '#f0c4a4', SKIN_SH = '#e3a985';
+const DENIM = '#4f86c9', DENIM_SH = '#2c5a98', JEAN_SH = '#0b1230';
+SAD.head = ellP(186, 84, 36, 40);
 function sadieLeg(hip, thigh, bend, color) {
   const knee = at(hip, 62, thigh), foot = at(knee, 64, thigh - bend);
-  limb3(hip, knee, foot, 24, color);
+  limb3(hip, knee, foot, 24, color, INK, JEAN_SH);
   // flared hem and a white sneaker
   const dx = foot[0] - knee[0], dy = foot[1] - knee[1], L = Math.hypot(dx, dy) || 1, ux = dx / L, uy = dy / L, nx = -uy, ny = ux;
   const f = new Path2D();
   f.moveTo(foot[0] - ux * 18 + nx * 12, foot[1] - uy * 18 + ny * 12); f.lineTo(foot[0] + ux * 6 + nx * 19, foot[1] + uy * 6 + ny * 19);
   f.lineTo(foot[0] + ux * 6 - nx * 19, foot[1] + uy * 6 - ny * 19); f.lineTo(foot[0] - ux * 18 - nx * 12, foot[1] - uy * 18 - ny * 12); f.closePath();
-  fs(f, color, 5);
+  comic(f, color, JEAN_SH, 6);
   const s = new Path2D(), sx = foot[0] + ux * 8, sy = foot[1] + uy * 8;
   s.moveTo(sx - 14, sy - 2); s.quadraticCurveTo(sx - 14, sy - 12, sx + 2, sy - 11); s.quadraticCurveTo(sx + 26, sy - 8, sx + 26, sy + 2); s.lineTo(sx - 14, sy + 4); s.closePath();
-  fs(s, '#eceae3', 5);
+  comic(s, '#f7f5ef', '#c4c0b4', 6, { k: .6 }); line(P(`M${sx - 13} ${sy + 1} L${sx + 25} ${sy - 1}`), '#e0559a', 3.5);
 }
 function sadieArm(sh, up, fore, color, bag) {
   const el = at(sh, 36, up), hand = at(el, 34, fore);
-  limb3(sh, el, hand, 21, color);
-  circ(hand[0], hand[1], 11, SKIN2, 5);
-  if (bag) { const b = new Path2D(); b.moveTo(hand[0] - 4, hand[1] + 6); b.quadraticCurveTo(hand[0] - 16, hand[1] + 34, hand[0] + 2, hand[1] + 38); b.quadraticCurveTo(hand[0] + 20, hand[1] + 34, hand[0] + 8, hand[1] + 6); b.closePath(); fs(b, '#58b24a', 4); }
+  limb3(sh, el, hand, 21, color, INK, DENIM_SH);
+  comic(ellP(hand[0], hand[1], 11, 11), SKIN2, SKIN_SH, 6, { k: .5 });
+  if (bag) { const b = new Path2D(); b.moveTo(hand[0] - 4, hand[1] + 6); b.quadraticCurveTo(hand[0] - 16, hand[1] + 34, hand[0] + 2, hand[1] + 38); b.quadraticCurveTo(hand[0] + 20, hand[1] + 34, hand[0] + 8, hand[1] + 6); b.closePath(); comic(b, '#5cc04c', '#2f8a26', 5, { k: .6 }); line(P(`M${hand[0] + 6} ${hand[1] + 12} Q${hand[0] + 10} ${hand[1] + 24} ${hand[0] + 6} ${hand[1] + 32}`), '#c9f7b8', 2.5); }
 }
 function drawSadie(a, px, py, k) {
   const t = a.phase, air = !a.ground;
@@ -313,42 +381,42 @@ function drawSadie(a, px, py, k) {
     ctx.save();
     if (a.dashT > 0) { const spin = (1 - a.dashT / DASH.girl.t) * Math.PI * 4; ctx.translate(186, 84); ctx.rotate(-spin); ctx.translate(-186, -84); }
     else { const sway = Math.sin(t * 2) * .05 + (air ? -.14 : 0) - Math.min(.12, a.speedVis * .1); ctx.translate(176, 62); ctx.rotate(sway); ctx.translate(-176, -62); }
-    fs(SAD.hairBack, HAIR, 5); line(SAD.strand1, HAIR2, 3); line(SAD.strand2, HAIR2, 3);
+    comic(SAD.hairBack, HAIR, HAIR2, 7, { rim: HAIR_HI, dot: 'rgba(150,80,0,.3)' }); line(SAD.strand1, HAIR2, 3.5); line(SAD.strand2, HAIR2, 3.5);
     ctx.restore();
   });
   // back arm
   upper(() => {
     let up = air ? 2.5 : a.scoopFx > 0 ? -.4 : .9 * Math.sin(t), fore = air ? 2.9 : up + 1.3;
     if (a.stumbleT > 0) { up = 2.7 + Math.sin(a.stumbleT * 40) * .5; fore = up + .4; }
-    sadieArm([170, 154], up, fore, '#3a66a3', false);
+    sadieArm([170, 154], up, fore, '#3c6aa8', false);
   });
-  sadieLeg([172, 242 + bob], bT, bB, '#162246');
+  sadieLeg([172, 242 + bob], bT, bB, '#18254d');
   // jacket and striped top
   upper(() => {
-    fs(SAD.jacket, '#4f86c9', 5);
+    comic(SAD.jacket, DENIM, DENIM_SH, 7, { k: 1.4, rim: '#8fbdf0' });
     ctx.save(); ctx.clip(SAD.topClip);
-    ctx.fillStyle = '#efe2c4'; ctx.fillRect(186, 146, 34, 96); ctx.fillStyle = '#7a5a3c'; for (let y = 156; y < 240; y += 16) ctx.fillRect(186, y, 34, 7);
+    ctx.fillStyle = '#f3e6c6'; ctx.fillRect(186, 146, 34, 96); ctx.fillStyle = '#7a5a3c'; for (let y = 156; y < 240; y += 16) ctx.fillRect(186, y, 34, 7);
     ctx.restore();
-    line(SAD.placket, INK, 5); fs(SAD.collarL, '#3f72b3', 5); fs(SAD.collarR, '#3f72b3', 5);
+    line(SAD.placket, INK, 5); comic(SAD.collarL, '#3f72b3', DENIM_SH, 5, { k: .5 }); comic(SAD.collarR, '#3f72b3', DENIM_SH, 5, { k: .5 });
     ctx.setLineDash([5, 4]); line(SAD.hem, '#a9c6ea', 2.5); ctx.setLineDash([]);
-    rr(156, 180, 22, 18, 3, '#3f72b3', 3); circ(202, 172, 3, '#d9b44a', 2); circ(203, 198, 3, '#d9b44a', 2);
+    rr(156, 180, 22, 18, 3, '#3f72b3', 3.5); circ(202, 172, 3, '#e8c24a', 2); circ(203, 198, 3, '#e8c24a', 2);
   });
-  sadieLeg([186, 242 + bob], fT, fB, '#22325f');
+  sadieLeg([186, 242 + bob], fT, fB, '#253872');
   // neck, head and face
   upper(() => {
-    fs(SAD.neck, SKIN, 5);
-    ell(186, 84, 36, 40, SKIN, 5);
+    comic(SAD.neck, SKIN, SKIN_SH, 6, { k: 1.3 });
+    comic(SAD.head, SKIN, SKIN_SH, 7, { k: 1.1, dot: 'rgba(160,60,30,.18)' });
     const oops = a.oopsT > 0;
-    line(oops ? SAD.browUp : SAD.brow, INK, 3.5);
-    fs(SAD.eye, '#fff', 3); circ(207, 76, 5, '#3d8fd6', 0); circ(208, 76, 2.2, INK, 0); circ(209.5, 74.5, 1.1, '#fff', 0);
-    line(SAD.lashes, INK, 2.5); line(SAD.nose, INK, 3.5);
-    if (oops) { ell(209, 106, 6, 7, '#7a2a2f', 3.5); }
-    else { fs(SAD.smile, '#fff', 3.5); line(SAD.lip, '#d9707a', 3); }
-    ell(202, 94, 7, 4, 'rgba(244,163,163,.7)', 0);
-    ctx.fillStyle = '#c98a5e'; for (const [x, y, r] of [[206, 88, 1.4], [211, 90, 1.4], [215, 87, 1.4], [201, 90, 1.2], [209, 85, 1.1]]) { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); }
-    fs(SAD.hairTop, HAIR, 5);
-    ctx.save(); ctx.translate(170, 100); ctx.rotate(Math.sin(t * 2 + 1) * .06 - (air ? .1 : 0)); ctx.translate(-170, -100); fs(SAD.lock, HAIR, 5); ctx.restore();
-    line(SAD.shine, HAIR2, 3);
+    line(oops ? SAD.browUp : SAD.brow, INK, 4.5);
+    fs(SAD.eye, '#fff', 3.5); circ(207, 76, 5.5, '#2f86d8', 0); circ(208, 76, 2.6, INK, 0); circ(209.8, 74.2, 1.3, '#fff', 0);
+    line(SAD.lashes, INK, 3); line(SAD.nose, INK, 4);
+    if (oops) { ell(209, 106, 6, 7, '#7a2a2f', 4); }
+    else { fs(SAD.smile, '#fff', 4); line(SAD.lip, '#d9707a', 3); }
+    ell(202, 94, 7, 4, 'rgba(240,120,130,.55)', 0);
+    ctx.fillStyle = '#c47a4e'; for (const [x, y, r] of [[206, 88, 1.5], [211, 90, 1.5], [215, 87, 1.5], [201, 90, 1.3], [209, 85, 1.2]]) { ctx.beginPath(); ctx.arc(x, y, r, 0, 7); ctx.fill(); }
+    comic(SAD.hairTop, HAIR, HAIR2, 7, { rim: HAIR_HI, dot: 'rgba(150,80,0,.3)' });
+    ctx.save(); ctx.translate(170, 100); ctx.rotate(Math.sin(t * 2 + 1) * .06 - (air ? .1 : 0)); ctx.translate(-170, -100); comic(SAD.lock, HAIR, HAIR2, 6, { k: .7 }); ctx.restore();
+    line(SAD.shine, '#fffbe6', 4);
   });
   // front arm, pumping (holding the poop bag)
   upper(() => {
@@ -379,11 +447,13 @@ const KY = {
   earIn: P('M306 74 L316 22 L330 74 Z'),
   whisk: P('M372 102 L396 98 M372 106 L396 110'),
 };
-const FUR = '#2b211d', FUR2 = '#1b1411';
+// glossy black-brown fur, inked comic-style: deep shadow below, a cool blue rim light where the light catches it
+const FUR = '#2e2422', FUR2 = '#1c1514', FUR_SH = '#0c0909', RIM = '#6f86b0', RIM2 = '#a9bddf';
+KY.head = ellP(318, 96, 34, 29);
 function kyLeg(hip, up, low, l1, l2, color) {
   const knee = at(hip, l1, up), paw = at(knee, l2, low);
-  limb3(hip, knee, paw, color === FUR ? 20 : 16, color, KINK);
-  ell(paw[0] + 4, paw[1] + 2, 14, 8, color, 4.5, KINK);
+  limb3(hip, knee, paw, color === FUR ? 20 : 16, color, KINK, FUR_SH);
+  comic(ellP(paw[0] + 4, paw[1] + 2, 14, 8), color, FUR_SH, 5, { k: .4, ink: KINK, rim: color === FUR ? RIM : null });
 }
 function drawKy(a, px, py, k) {
   const t = a.phase, air = !a.ground, squat = a.squatT > 0, leashed = a.leashT > 0;
@@ -406,25 +476,25 @@ function drawKy(a, px, py, k) {
   // tail: wags, shoots up when squatting, droops on the leash
   const wag = Math.sin(performance.now() / 1000 * (leashed ? 5 : 17)) * (leashed ? 4 : 13);
   const tip = squat ? [104, 24] : leashed ? [64, 168] : [70 + wag * .4, 54 + wag];
-  limb([[120, 124], [86, 106], tip], 11, FUR, KINK, 8);
+  limb([[120, 124], [86, 106], tip], 11, FUR, KINK, 10, FUR_SH);
   legs(true);
-  fs(KY.body, FUR, 5, KINK); line(KY.sheen, '#5a4740', 4);
+  comic(KY.body, FUR, FUR_SH, 7, { k: 1.6, rim: RIM, ink: KINK, dot: 'rgba(0,0,0,.45)' }); line(KY.sheen, RIM2, 4.5);
   legs(false);
-  fs(KY.neck, FUR, 5, KINK);
+  comic(KY.neck, FUR, FUR_SH, 7, { k: 1.2, rim: RIM, ink: KINK, dot: 'rgba(0,0,0,.45)' });
   // head
   ctx.save(); ctx.translate(300, 110); ctx.rotate(leashed ? .22 : a.barkT > 0 ? -.12 : 0); ctx.translate(-300, -110);
   const earBack = -Math.min(.25, a.speedVis * .18) + (a.barkT > 0 ? .1 : 0) + (air ? -.15 : 0) + Math.sin(t * 2) * .04;
-  ctx.save(); ctx.translate(296, 80); ctx.rotate(earBack * .8); ctx.translate(-296, -80); fs(KY.farEar, FUR2, 5, KINK); ctx.restore();
-  ell(318, 96, 34, 29, FUR, 5, KINK);
-  fs(KY.muzzle, FUR, 5, KINK); line(KY.headSheen, '#5a4740', 3.5);
-  fs(KY.chin, '#8f8a86', 3.5, KINK);
-  if (a.barkT > 0) { fs(KY.mouthBig, '#7a2a2f', 3.5, KINK); }
-  else { fs(KY.mouth, '#7a2a2f', 3.5, KINK); if (!squat && !leashed) { fs(KY.tongue, '#f07a8c', 3.5, KINK); line(KY.tongueLine, '#c94a5c', 2); } }
-  ell(392, 96, 8, 6.5, '#0d0908', 4, KINK); circ(394, 94, 2, '#6b625e', 0);
-  if (squat) { const lid = new Path2D('M324 88 C330 84 340 84 346 88'); line(lid, KINK, 4); line(KY.browStrain, '#5a4740', 3.5); }
-  else { fs(KY.eye, '#fff', 3, KINK); circ(337, 88, 5, '#e09a34', 0); circ(338, 88, 2.4, KINK, 0); circ(339.5, 86.5, 1.1, '#fff', 0); line(KY.brow, '#5a4740', 3.5); }
-  ctx.save(); ctx.translate(318, 78); ctx.rotate(earBack); ctx.translate(-318, -78); fs(KY.ear, FUR, 5, KINK); fs(KY.earIn, '#5c3a37', 0); ctx.restore();
-  line(KY.whisk, '#8f8a86', 2);
+  ctx.save(); ctx.translate(296, 80); ctx.rotate(earBack * .8); ctx.translate(-296, -80); comic(KY.farEar, FUR2, FUR_SH, 6, { k: .6, ink: KINK }); ctx.restore();
+  comic(KY.head, FUR, FUR_SH, 7, { rim: RIM, ink: KINK, dot: 'rgba(0,0,0,.45)' });
+  comic(KY.muzzle, FUR, FUR_SH, 7, { k: .6, rim: RIM, ink: KINK }); line(KY.headSheen, RIM2, 4);
+  comic(KY.chin, '#9a948f', '#6a6460', 4, { k: .4, ink: KINK });
+  if (a.barkT > 0) { fs(KY.mouthBig, '#7a2a2f', 4, KINK); }
+  else { fs(KY.mouth, '#7a2a2f', 4, KINK); if (!squat && !leashed) { fs(KY.tongue, '#f57d90', 4, KINK); line(KY.tongueLine, '#c94a5c', 2.5); } }
+  ell(392, 96, 8, 6.5, '#0d0908', 4.5, KINK); circ(394.5, 93.5, 2.4, RIM2, 0);
+  if (squat) { const lid = new Path2D('M324 88 C330 84 340 84 346 88'); line(lid, KINK, 5); line(KY.browStrain, RIM, 4); }
+  else { fs(KY.eye, '#fff', 3.5, KINK); circ(337, 88, 5.5, '#f0a32e', 0); circ(338, 88, 2.7, KINK, 0); circ(339.8, 86.3, 1.3, '#fff', 0); line(KY.brow, RIM, 4); }
+  ctx.save(); ctx.translate(318, 78); ctx.rotate(earBack); ctx.translate(-318, -78); comic(KY.ear, FUR, FUR_SH, 7, { k: .8, rim: RIM, ink: KINK }); fs(KY.earIn, '#6a3f3b', 0); ctx.restore();
+  line(KY.whisk, '#9a948f', 2.5);
   ctx.restore();
   ctx.restore();
   ctx.restore();
@@ -438,9 +508,9 @@ function drawPoop(x, y, kind, born, t) {
   const pop = Math.min(1, born * 5), s = (kind === 'gold' ? .46 : kind === 'big' ? .4 : .3) * (.6 + .4 * pop + Math.sin(pop * Math.PI) * .25);
   ctx.save(); ctx.translate(SX(x), SY(y)); ctx.scale(V.scale * s, V.scale * s); ctx.translate(-60, -92);
   ctx.lineJoin = 'round';
-  const f = POO_FILL[kind];
-  POO.forEach((p, i) => fs(p, f[i], 4, '#2a170b'));
-  ctx.lineCap = 'round'; line(POO_HI, f[4], 3);
+  const f = POO_FILL[kind], sh = kind === 'gold' ? '#b8740c' : '#4f2a12';
+  POO.forEach((p, i) => comic(p, f[i], sh, 6, { k: .9, ink: '#1e0f06', dot: kind === 'gold' ? 'rgba(120,60,0,.3)' : 'rgba(0,0,0,.3)' }));
+  ctx.lineCap = 'round'; line(POO_HI, f[4], 4);
   // stink lines (mild) or sparkles (golden)
   ctx.globalAlpha = .75;
   if (kind === 'gold') { ctx.fillStyle = '#fff6c0'; for (let i = 0; i < 3; i++) { const a = t * 3 + i * 2.1; star(60 + Math.cos(a) * 60, 40 + Math.sin(a) * 30, 7); } }
@@ -455,11 +525,12 @@ function prop(fn, x, y = 0, sc = 1, rot = 0) { ctx.save(); ctx.translate(SX(x), 
 const PROPS = {
   couch() {
     rr(-112, -12, 12, 12, 2, '#6d4c41'); rr(100, -12, 12, 12, 2, '#6d4c41');
-    rr(-112, -112, 224, 60, 16, '#c43c38');
-    rr(-126, -48, 252, 38, 10, '#d64541');
-    rr(-108, -66, 106, 24, 10, '#e25550'); rr(2, -66, 106, 24, 10, '#e25550');
-    rr(-134, -86, 30, 76, 13, '#d64541'); rr(104, -86, 30, 76, 13, '#d64541');
-    rr(-92, -96, 34, 30, 9, '#f2c14e', 2.6); rr(60, -94, 30, 28, 9, '#7fb3e0', 2.6);
+    const C = (x, y, w, h, r, c, sh, k = .7) => comic(rrP(x, y, w, h, r), c, sh, 3.5, { k, dot: 'rgba(80,0,0,.25)' });
+    C(-112, -112, 224, 60, 16, '#c43c38', '#8f2420', 1);
+    C(-126, -48, 252, 38, 10, '#d64541', '#9c2a26', .8);
+    C(-108, -66, 106, 24, 10, '#e9605a', '#b8352f', .5); C(2, -66, 106, 24, 10, '#e9605a', '#b8352f', .5);
+    C(-134, -86, 30, 76, 13, '#d64541', '#9c2a26'); C(104, -86, 30, 76, 13, '#d64541', '#9c2a26');
+    comic(rrP(-92, -96, 34, 30, 9), '#f6c445', '#c7861a', 3, { k: .5 }); comic(rrP(60, -94, 30, 28, 9), '#7fb3e0', '#4a7fb3', 3, { k: .5 });
     ctx.fillStyle = INK; for (const x of [-60, -20, 20, 60]) { ctx.beginPath(); ctx.arc(x, -84, 2, 0, 7); ctx.fill(); }
   },
   shoes() {
@@ -471,8 +542,9 @@ const PROPS = {
     }
   },
   roses() {
-    for (const [x, y, r] of [[-80, -36, 34], [-40, -62, 40], [10, -70, 42], [56, -54, 38], [88, -30, 30], [-20, -30, 36], [40, -26, 34]]) circ(x, y, r, '#3f8f3a', 2.6);
-    line(P('M-60 -50 C-50 -60 -40 -58 -34 -66 M30 -50 C40 -62 52 -60 60 -70 M-10 -40 C0 -50 8 -48 14 -56'), '#2f6f2b', 2);
+    const bush = new Path2D(); for (const [x, y, r] of [[-80, -36, 34], [-40, -62, 40], [10, -70, 42], [56, -54, 38], [88, -30, 30], [-20, -30, 36], [40, -26, 34]]) bush.ellipse(x, y, r, r, 0, 0, 7);
+    line(bush, INK, 6); comic(bush, '#6cc251', '#3f9535', 0, { k: 1.6, dot: 'rgba(0,60,0,.3)' });
+    line(P('M-60 -50 C-50 -60 -40 -58 -34 -66 M30 -50 C40 -62 52 -60 60 -70 M-10 -40 C0 -50 8 -48 14 -56'), '#2f7f2b', 2.5);
     for (const [x, y] of [[-70, -52], [-34, -86], [8, -98], [50, -80], [82, -46], [-14, -50], [30, -42], [-52, -24], [64, -22]]) {
       circ(x, y, 11, '#f48fb1', 2.6); line(P(`M${x - 4} ${y} C${x - 4} ${y - 5} ${x + 5} ${y - 5} ${x + 4} ${y + 1} C${x + 3} ${y + 5} ${x - 2} ${y + 4} ${x - 1} ${y}`), '#c2185b', 1.8);
     }
@@ -491,20 +563,20 @@ const PROPS = {
     rr(-60, -82, 120, 9, 2, '#ffffff', 2.4); rr(-60, -30, 120, 9, 2, '#ffffff', 2.4);
     const arch = new Path2D(); arch.arc(0, -160, 67, Math.PI, 0); line(arch, INK, 18); line(arch, '#3f8f3a', 12);
     for (let i = 0; i <= 8; i++) { const a = Math.PI + i * Math.PI / 8; circ(Math.cos(a) * 67, -160 + Math.sin(a) * 67, 7, '#f48fb1', 2); }
-    rr(-46, -246, 92, 26, 6, '#fff3b0'); ctx.fillStyle = INK; ctx.font = '900 16px system-ui'; ctx.textAlign = 'center'; ctx.fillText('FINISH!', 0, -227);
+    rr(-46, -246, 92, 26, 6, '#fff3b0'); ctx.fillStyle = INK; ctx.font = `20px ${COMIC_FONT}`; ctx.textAlign = 'center'; ctx.fillText('FINISH!', 0, -226);
   },
   blocks() {
-    const cube = (x, y, c, l) => { rr(x, y, 20, 20, 3, c); ctx.fillStyle = '#fff'; ctx.font = '900 13px system-ui'; ctx.textAlign = 'center'; ctx.fillText(l, x + 10, y + 15); };
+    const cube = (x, y, c, l) => { comic(rrP(x, y, 20, 20, 3), c, 'rgba(0,0,0,.35)', 3, { k: .45 }); ctx.fillStyle = '#fff'; ctx.font = `15px ${COMIC_FONT}`; ctx.textAlign = 'center'; ctx.fillText(l, x + 10, y + 16); };
     cube(-21, -20, '#e53935', 'A'); cube(1, -20, '#1e88e5', 'B'); cube(-10, -40, '#fbc02d', 'C');
   },
   ball() {
     for (let i = 0; i < 6; i++) { const p = new Path2D(); p.moveTo(0, -16); p.arc(0, -16, 16, i * Math.PI / 3, (i + 1) * Math.PI / 3); p.closePath(); ctx.fillStyle = ['#e53935', '#fbc02d', '#1e88e5'][i % 3]; ctx.fill(p); }
-    circ(0, -16, 16, null, 2.6); circ(-5, -22, 4, 'rgba(255,255,255,.7)', 0);
+    crescent(ellP(0, -16, 16, 16), 5, -5, 'rgba(0,0,0,.3)', dotsOf('rgba(0,0,0,.3)')); circ(0, -16, 16, null, 3.2); circ(5, -22, 4, 'rgba(255,255,255,.85)', 0);
   },
   pot() {
     for (const [rx, ry, r] of [[-8, -46, -.5], [8, -48, .5], [0, -54, 0]]) ell(rx, ry, 7, 14, '#43a047', 2.2, INK, r);
-    const p = new Path2D(); p.moveTo(-16, -32); p.lineTo(16, -32); p.lineTo(12, 0); p.lineTo(-12, 0); p.closePath(); fs(p, '#c8693f', 2.6);
-    rr(-19, -38, 38, 9, 2, '#d77a4d', 2.6);
+    const p = new Path2D(); p.moveTo(-16, -32); p.lineTo(16, -32); p.lineTo(12, 0); p.lineTo(-12, 0); p.closePath(); comic(p, '#d0703f', '#94431f', 3.2, { k: .6 });
+    comic(rrP(-19, -38, 38, 9, 2), '#e08552', '#a5502a', 3.2, { k: .3 });
   },
   scraps() {
     ctx.rotate(-.5); rr(4, -4, 20, 8, 4, '#f6f1e3', 2.4); circ(26, -6, 5, '#f6f1e3', 2.2); circ(26, 3, 5, '#f6f1e3', 2.2); ell(-6, 0, 15, 11, '#b5651d', 2.6); line(P('M-14 -4 C-8 -8 -2 -8 2 -4'), '#e0a060', 2);
@@ -528,13 +600,14 @@ const PROPS = {
 const BG_PAR = .5, SLOT = 320;
 function drawBackground() {
   const sc = V.scale, H = V.h - V.floor + 2;
-  const sky = ctx.createLinearGradient(0, 0, 0, SY(0)); sky.addColorStop(0, '#7ec8f2'); sky.addColorStop(1, '#d4f0ff');
-  ctx.fillStyle = sky; ctx.fillRect(0, 0, cv.width, cv.height);
+  // comic-print sky: flat cyan with big Ben-Day dots fading toward the horizon
+  ctx.fillStyle = '#9edcf8'; ctx.fillRect(0, 0, cv.width, cv.height);
+  ctx.save(); ctx.setTransform(1, 0, 0, 1, 0, 0); ctx.fillStyle = dotsOf('#6fc4ee', 11); ctx.globalAlpha = .9; ctx.fillRect(0, 0, cv.width, SY(0) * .55); ctx.globalAlpha = .45; ctx.fillRect(0, SY(0) * .55, cv.width, SY(0) * .25); ctx.restore();
   const off = S.cam * BG_PAR;
   // clouds, very far back
   for (let i = Math.floor(S.cam * .2 / 260) - 1; i * 260 < S.cam * .2 + V.w + 260; i++) {
     const x = (i * 260 - S.cam * .2) * sc, y = (30 + hash(i) * 70) * sc;
-    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); for (const [cx, cy, r] of [[0, 0, 22], [24, -8, 26], [50, 2, 20]]) circ(cx, cy, r, '#ffffff', 3); ctx.restore();
+    ctx.save(); ctx.translate(x, y); ctx.scale(sc, sc); const cl = new Path2D(); for (const [cx, cy, r] of [[0, 0, 22], [24, -8, 26], [50, 2, 20]]) cl.ellipse(cx, cy, r, r, 0, 0, 7); line(cl, '#4a4040', 7); comic(cl, '#ffffff', '#cfe6f5', 0, { k: .8, dot: 'rgba(80,140,200,.25)' }); ctx.restore();
   }
   for (let i = Math.floor(off / SLOT); i * SLOT < off + V.w; i++) {
     // a background slot belongs to the room that is under the middle of the screen when that slot is there
@@ -573,7 +646,7 @@ function drawBackground() {
       } else if (r < .5) { // coat hooks
         line(P('M60 -230 L260 -230'), INK, 12); line(P('M60 -230 L260 -230'), '#8d6e63', 6);
         rr(80, -226, 46, 90, 14, '#e0559a', 3.5); rr(170, -226, 46, 100, 14, '#4f86c9', 3.5);
-      } else { rr(110, -270, 100, 76, 4, '#c9a26b', 4); rr(120, -260, 80, 56, 2, '#fff3b0', 3); ctx.fillStyle = INK; ctx.font = '900 13px system-ui'; ctx.textAlign = 'center'; ctx.fillText('HOME', 160, -226); }
+      } else { rr(110, -270, 100, 76, 4, '#c9a26b', 4); rr(120, -260, 80, 56, 2, '#fff3b0', 3); ctx.fillStyle = INK; ctx.font = `17px ${COMIC_FONT}`; ctx.textAlign = 'center'; ctx.fillText('HOME', 160, -225); }
     } else {
       // garden: hedge far back, then a wooden fence (roses) or sheds and a greenhouse (vegetables)
       for (let x = 0; x < SLOT; x += 40) circ(x + 20, -132 - hash(i * 7 + x) * 18, 36, '#5aa649', 3);
@@ -588,6 +661,7 @@ function drawBackground() {
     }
     ctx.restore();
   }
+  ctx.fillStyle = 'rgba(255,246,225,.26)'; ctx.fillRect(0, 0, cv.width, SY(0));
 }
 function drawFloor() {
   const sc = V.scale, y0 = SY(0);
@@ -602,7 +676,8 @@ function drawFloor() {
       if (s.floor === 'grass') { ctx.fillRect(px, y0, 3 * sc, 7 * sc); ctx.fillRect(px + 9 * sc, y0, 2 * sc, 5 * sc); }
       else ctx.fillRect(px, y0, 2.5 * sc, cv.height - y0);
     }
-    ctx.fillStyle = INK; ctx.fillRect(a, y0 - 1.5 * sc, b - a, 3.5 * sc);
+    ctx.fillStyle = 'rgba(0,0,0,.22)'; ctx.fillRect(a, y0, b - a, 9 * sc);
+    ctx.fillStyle = INK; ctx.fillRect(a, y0 - 2 * sc, b - a, 4.5 * sc);
   }
   for (const d of LEVEL.deco) {
     if (d.kind !== 'rug' || SX(d.x + d.w) < 0 || SX(d.x) > cv.width) continue;
@@ -628,22 +703,25 @@ function drawThings() {
   }
   for (const p of S.poops) drawPoop(p.x, p.y, p.kind, p.born, S.t);
 }
+// drawn a bit bigger than their hit boxes so they read clearly on a phone
+const ART = { girl: 136 / 346, dog: 88 / 239, h: { girl: 136, dog: 88 } };
 function drawRunner(a) {
   if (a.blinkT > 0 && Math.floor(a.blinkT * 12) % 2) return;
   const x = wx(a), fl = surfaceAtX(x), sc = V.scale;
   ctx.fillStyle = 'rgba(0,0,0,.2)'; ctx.beginPath(); ctx.ellipse(SX(x), SY(fl), Math.max(8, SIZE[a.role].w * .6 - Math.min(20, (a.y - fl) * .06)) * sc, 5 * sc, 0, 0, 7); ctx.fill();
   const squash = a.landT > 0 ? .9 : 1;
+  if (a.dashT > 0) speedLines(SX(x - SIZE[a.role].w * .5), a.y + ART.h[a.role], ART.h[a.role]);
   ctx.save(); ctx.translate(SX(x), SY(a.y)); ctx.scale(2 - squash, squash); ctx.translate(-SX(x), -SY(a.y));
-  if (a.role === 'girl') drawSadie(a, SX(x), SY(a.y), sc * SIZE.girl.h / 346);
-  else drawKy(a, SX(x), SY(a.y), sc * SIZE.dog.h / 239);
+  if (a.role === 'girl') drawSadie(a, SX(x), SY(a.y), sc * ART.girl);
+  else drawKy(a, SX(x), SY(a.y), sc * ART.dog);
   ctx.restore();
   if (a.role === 'girl' && a.scoopT > 0) { ctx.strokeStyle = 'rgba(88,178,74,.75)'; ctx.lineWidth = 3 * sc; ctx.setLineDash([8 * sc, 6 * sc]); ctx.beginPath(); ctx.arc(SX(x + 10), SY(a.y + 2), 92 * sc, Math.PI, 2 * Math.PI); ctx.stroke(); ctx.setLineDash([]); }
 }
 function drawLeash() {
   if (dog.leashT <= 0) return;
-  const sc = V.scale, k = SIZE.girl.h / 346;
+  const sc = V.scale, k = ART.girl;
   const hx = SX(wx(girl) + (250 - 180) * k), hy = SY(girl.y + (380 - 160) * k);
-  const kx = SX(wx(dog) + (300 - 215) * SIZE.dog.h / 239), ky = SY(dog.y + (232 - 120) * SIZE.dog.h / 239);
+  const kx = SX(wx(dog) + (300 - 215) * ART.dog), ky = SY(dog.y + (232 - 120) * ART.dog);
   const sag = Math.max(10, 60 - Math.abs(kx - hx) / sc * .12) * sc;
   ctx.lineCap = 'round';
   for (const [c, w] of [[INK, 7], ['#e53935', 4]]) { ctx.strokeStyle = c; ctx.lineWidth = w * sc; ctx.beginPath(); ctx.moveTo(hx, hy); ctx.quadraticCurveTo((hx + kx) / 2, Math.max(hy, ky) + sag, kx, ky); ctx.stroke(); }
@@ -659,16 +737,40 @@ function drawFx() {
       ctx.beginPath(); ctx.arc(SX(f.x - k * 30), SY(f.y + k * 18), (8 + k * 16) * sc * f.r, 0, 7); ctx.fill(); ctx.stroke();
       ctx.globalAlpha = 1; continue;
     }
-    const y = SY(f.y + k * 46);
-    ctx.globalAlpha = 1 - k * k;
-    ctx.font = `900 ${(f.size || 20) * sc}px system-ui`; ctx.lineWidth = 5 * sc; ctx.strokeStyle = INK; ctx.fillStyle = f.color;
-    ctx.strokeText(f.text, SX(f.x), y); ctx.fillText(f.text, SX(f.x), y);
-    if (f.sub) { ctx.font = `900 ${12 * sc}px system-ui`; ctx.lineWidth = 4 * sc; ctx.strokeText(f.sub, SX(f.x), y + 15 * sc); ctx.fillStyle = '#fff'; ctx.fillText(f.sub, SX(f.x), y + 15 * sc); }
+    // comic sound-effect lettering: a jagged burst or a speech bubble behind it, slammed in big and settling
+    const y = SY(f.y + k * 40), x = SX(f.x), size = (f.size || 20) * sc * (1 + Math.max(0, .35 - k * 3));
+    ctx.globalAlpha = k > .7 ? (1 - k) / .3 : 1;
+    ctx.save(); ctx.translate(x, y); ctx.rotate(f.tilt);
+    ctx.font = `${size}px ${COMIC_FONT}`;
+    const tw = ctx.measureText(f.text).width;
+    if (f.burst) {
+      const rx = tw / 2 + size * .55, ry = size * 1.05, n = 14;
+      ctx.beginPath();
+      for (let i = 0; i < n * 2; i++) { const a = i * Math.PI / n + f.tilt, r = i % 2 ? .72 : 1 + hash(i + f.seed) * .18; ctx.lineTo(Math.cos(a) * rx * r, -size * .35 + Math.sin(a) * ry * r); }
+      ctx.closePath(); ctx.fillStyle = f.burst; ctx.fill(); ctx.lineWidth = 3.5 * sc; ctx.strokeStyle = INK; ctx.lineJoin = 'miter'; ctx.stroke(); ctx.lineJoin = 'round';
+    } else if (f.bubble) {
+      const rx = tw / 2 + size * .45, ry = size * .8, cy = -size * .35;
+      ctx.beginPath(); ctx.ellipse(0, cy, rx, ry, 0, 0, Math.PI * 2);
+      ctx.moveTo(-rx * .45, cy + ry * .7); ctx.lineTo(-rx * .85, cy + ry * 1.9); ctx.lineTo(-rx * .1, cy + ry * .9);
+      ctx.fillStyle = '#fff'; ctx.fill(); ctx.lineWidth = 3.5 * sc; ctx.strokeStyle = INK; ctx.stroke();
+      ctx.beginPath(); ctx.ellipse(0, cy, rx - 1.5 * sc, ry - 1.5 * sc, 0, 0, Math.PI * 2); ctx.fill();
+    }
+    ctx.lineWidth = Math.max(3, size * .2); ctx.strokeStyle = INK; ctx.fillStyle = f.color;
+    if (!f.burst && !f.bubble) { ctx.fillStyle = INK; ctx.fillText(f.text, size * .07, size * .07); ctx.fillStyle = f.color; }
+    ctx.strokeText(f.text, 0, 0); ctx.fillText(f.text, 0, 0);
+    if (f.sub) { ctx.font = `900 ${12 * sc}px system-ui`; ctx.lineWidth = 4 * sc; const sy = f.burst ? size * .95 : size * .7; ctx.strokeText(f.sub, 0, sy); ctx.fillStyle = '#fff'; ctx.fillText(f.sub, 0, sy); }
+    ctx.restore();
     ctx.globalAlpha = 1;
   }
 }
-function pop(x, y, text, color, sub = '', size = 20) { S.fx.push({ x, y, text, color, sub, size, t: 0, life: 1.1 }); }
-function draw() { drawBackground(); drawFloor(); drawThings(); drawLeash(); drawRunner(girl); drawRunner(dog); drawFx(); }
+const COMIC_FONT = 'Bangers, Impact, "Arial Black", system-ui, sans-serif';
+document.fonts?.load('20px Bangers').catch(() => {});
+// opt: { burst: fill colour of a jagged burst, bubble: true for a speech bubble }
+function pop(x, y, text, color, sub = '', size = 20, opt = {}) { S.fx.push({ x, y, text, color, sub, size, t: 0, life: 1.1, tilt: (Math.random() - .5) * .22, seed: Math.random() * 99, ...opt }); }
+function draw() {
+  drawBackground(); drawFloor(); drawThings(); drawLeash(); drawRunner(girl); drawRunner(dog); drawFx();
+  const b = 5 * V.dpr; ctx.lineWidth = b * 2; ctx.strokeStyle = INK; ctx.strokeRect(0, 0, cv.width, cv.height);   // the comic panel's frame
+}
 
 // ============================================================================================
 // GAME
@@ -716,7 +818,7 @@ function buildPads() {
   document.querySelectorAll('.slide').forEach(e => e.remove());
   if (!isTouch || !(S.phase === 'play' || S.phase === 'count' || S.phase === 'paused')) return;
   const humans = S.mode === 'duo' ? ['girl', 'dog'] : [S.mode];
-  const W = innerWidth;
+  const W = APP.w;
   for (const role of humans) {
     const two = humans.length === 2, left = two ? role === 'girl' : true;
     const zone = document.createElement('div'); zone.className = 'zone' + (two && role === 'girl' ? ' split' : '');
@@ -739,16 +841,17 @@ function buildPads() {
     hint.style[side === 'left' ? 'right' : 'left'] = '16px'; hint.style.bottom = 'calc(30px + env(safe-area-inset-bottom))';
     zone.appendChild(hint);
     zone.addEventListener('pointerdown', e => {
-      audio(); tapKy(e.clientX, e.clientY);
+      const [x, y] = toApp(e);
+      audio(); tapKy(x, y);
       if (pad.id != null) return; e.preventDefault();
-      pad.id = e.pointerId; pad.ox = e.clientX; pad.move = 0; hint.hidden = true;
+      pad.id = e.pointerId; pad.ox = x; pad.move = 0; hint.hidden = true;
       try { zone.setPointerCapture(e.pointerId); } catch {}
-      const s = document.createElement('div'); s.className = 'slide'; s.style.left = e.clientX + 'px'; s.style.top = e.clientY + 'px'; s.innerHTML = '<b></b>';
-      document.body.appendChild(s); pad.slide = s;
+      const s = document.createElement('div'); s.className = 'slide'; s.style.left = x + 'px'; s.style.top = y + 'px'; s.innerHTML = '<b></b>';
+      $('app').appendChild(s); pad.slide = s;
     });
     zone.addEventListener('pointermove', e => {
       if (e.pointerId !== pad.id) return;
-      let dx = e.clientX - pad.ox; const R = 46;
+      let dx = toApp(e)[0] - pad.ox; const R = 46;
       if (Math.abs(dx) > R) { pad.ox += dx - Math.sign(dx) * R; dx = Math.sign(dx) * R; pad.slide.style.left = pad.ox + 'px'; }
       pad.slide.firstChild.style.transform = `translateX(${dx}px)`;
       pad.move = Math.abs(dx) < 8 ? 0 : dx / R;
@@ -769,10 +872,10 @@ function readHuman(a) {
 function tapKy(cx, cy) {
   if (S.phase !== 'play' && S.phase !== 'count') return;
   const x = cx * V.dpr, y = cy * V.dpr, kx = SX(wx(dog)), ky = SY(dog.y), s = V.scale;
-  if (Math.abs(x - kx) < 55 * s && y < ky + 8 * s && y > ky - 85 * s) bark();
+  if (Math.abs(x - kx) < 64 * s && y < ky + 10 * s && y > ky - 105 * s) bark();
 }
-cv.addEventListener('pointerdown', e => { audio(); tapKy(e.clientX, e.clientY); });
-function bark() { if (dog.barkT > 0) return; dog.barkT = .35; SFX.woof(); pop(wx(dog) + 30, dog.y + 80, 'WOOF!', '#fff', '', 18); }
+cv.addEventListener('pointerdown', e => { audio(); tapKy(...toApp(e)); });
+function bark() { if (dog.barkT > 0) return; dog.barkT = .35; SFX.woof(); pop(wx(dog) + 52, dog.y + 96, 'WOOF!', INK, '', 22, { bubble: true }); }
 
 // ---------- physics ----------
 const couchAt = x => LEVEL.couches.find(c => x > c.x && x < c.x + c.w);
@@ -782,7 +885,7 @@ function say(a, msg) { if (!a.cpu) toast(msg, 1.1); }
 function stumble(a, what) {
   if (a.blinkT > 0 || a.stumbleT > 0) return;
   a.stumbleT = .5; a.dashT = 0; a.stumbles++; a.vy = Math.max(a.vy, 260); a.ground = false;
-  SFX.bonk(); say(a, `${NAMES[a.role]} tripped on ${what}!`);
+  SFX.bonk(); say(a, `${NAMES[a.role]} tripped on ${what}!`); pop(wx(a) + 20, a.y + ART.h[a.role] * .8, 'BONK!', '#ff5a3c', '', 20, { burst: '#fff27a' });
 }
 function step(a, dt) {
   const D = DASH[a.role];
@@ -791,7 +894,10 @@ function step(a, dt) {
   const press = k => a.input[k] && !a.was[k];
   if (press('jump') && a.ground && a.stumbleT <= 0) { a.vy = JUMP_V; a.ground = false; SFX.jump(); }
   if (!a.input.jump && a.vy > 220) a.vy = 220 + (a.vy - 220) * .5;           // let go early for a small hop
-  if (press('dash') && a.dashCd <= 0 && a.stumbleT <= 0) { a.dashT = D.t; a.dashCd = D.cd; a.role === 'dog' ? SFX.fart() : SFX.whoosh(); }
+  if (press('dash') && a.dashCd <= 0 && a.stumbleT <= 0) {
+    a.dashT = D.t; a.dashCd = D.cd; a.role === 'dog' ? SFX.fart() : SFX.whoosh();
+    if (a.role === 'dog') pop(wx(a) - 60, a.y + 40, 'PFFFT!', '#c9c04a', '', 22, { burst: '#efe9b0' }); else pop(wx(a) - 40, a.y + 150, 'WHOOSH!', '#f6c445', '', 20);
+  }
   if (press('act') && a.role === 'dog') tryPoop(a);
   for (const k of ['jump', 'dash', 'act']) a.was[k] = a.input[k];
 
@@ -831,15 +937,24 @@ function step(a, dt) {
   // fart cloud trail while Ky dashes
   if (a.role === 'dog' && a.dashT > 0) { S.puffT -= dt; if (S.puffT <= 0) { S.puffT = .045; S.fx.push({ puff: true, x: wx(a) - 34, y: a.y + 26 + Math.random() * 12, r: .7 + Math.random() * .6, t: 0, life: .8 }); } }
 }
+// Ky always runs ahead of Sadie (Simon, 2026-11-18). She can't get past him: running or whooshing into him stops her
+// at his tail. If he tumbles back into her he pushes her back, and if she has nowhere left to go he gets shoved forward.
+const GAP = 64;
+function keepOrder() {
+  if (dog.sx - girl.sx >= GAP) return;
+  const want = dog.sx - GAP;
+  if (want >= -SIZE.girl.w * .5) { girl.sx = want; girl.dashT = 0; }
+  else dog.sx = girl.sx + GAP;
+}
 function takeItem(a, it) {
   SFX.pup();
-  if (it.kind === 'scraps') { a.ammo = Math.min(AMMO.cap, a.ammo + AMMO.scraps); pop(it.x, it.y + 20, '+2 poops', '#c49a6c'); say(a, 'Food scraps! +2 poops'); }
-  if (it.kind === 'chilli') { a.gold = true; pop(it.x, it.y + 20, 'CHILLI!', '#e53935'); say(a, 'Chilli! The next poop is a giant golden swirl'); }
+  if (it.kind === 'scraps') { a.ammo = Math.min(AMMO.cap, a.ammo + AMMO.scraps); pop(it.x, it.y + 20, 'NOM! +2', '#ffb04a', '', 20, { burst: '#fff27a' }); say(a, 'Food scraps! +2 poops'); }
+  if (it.kind === 'chilli') { a.gold = true; pop(it.x, it.y + 20, 'CHILLI!', '#e53935', '', 22, { burst: '#fff27a' }); say(a, 'Chilli! The next poop is a giant golden swirl'); }
   if (it.kind === 'leash') {
     a.leashes++; dog.leashT = LEASH_T; dog.knock = -260; SFX.woof();
-    pop(wx(dog), dog.y + 90, 'LEASHED!', '#e53935'); toast('Leash! Ky can\'t poop for 4 seconds', 1.2);
+    pop(wx(dog), dog.y + 100, 'SNAP! LEASHED!', '#e53935', '', 22, { burst: '#fff' }); toast('Leash! Ky can\'t poop for 4 seconds', 1.2);
   }
-  if (it.kind === 'scooper') { a.scoopT = SCOOP_T; pop(it.x, it.y + 20, 'SCOOPER!', '#58b24a'); say(a, 'Pooper-scooper! Longer reach for 6 seconds'); }
+  if (it.kind === 'scooper') { a.scoopT = SCOOP_T; pop(it.x, it.y + 20, 'SCOOPER!', '#58b24a', '', 22, { burst: '#fff27a' }); say(a, 'Pooper-scooper! Longer reach for 6 seconds'); }
 }
 function tryPoop(a) {
   if (a.leashT > 0) { say(a, 'Leashed! No pooping'); return; }
@@ -852,7 +967,8 @@ function tryPoop(a) {
   if (a.gold) a.golds++;
   a.gold = false;
   S.poops.push({ x, y: a.y, vy: 0, kind, value: VALUE[kind], born: 0 });
-  if (z || kind === 'gold') pop(x, land + 46, kind === 'gold' ? 'GOLDEN!' : 'SNEAKY!', kind === 'gold' ? '#ffd23f' : '#ff8fc0', z ? ZONE_NAME[z.kind] : '', 17);
+  if (z || kind === 'gold') pop(x, land + 50, kind === 'gold' ? 'GOLDEN!' : 'SNEAKY!', kind === 'gold' ? '#ffd23f' : '#ff6fb0', z ? ZONE_NAME[z.kind] : '', 22, { burst: kind === 'gold' ? '#fff8d6' : '#fff27a' });
+  else pop(x, land + 34, 'PLOP!', '#b0723f', '', 17);
   SFX.plop();
 }
 
@@ -867,7 +983,7 @@ function update(dt) {
   if (S.phase !== 'play') return;
   S.t += dt; S.cam += SCROLL * dt;
   for (const a of [girl, dog]) { if (a.cpu) think(a, dt); else readHuman(a); }
-  step(girl, dt); step(dog, dt);
+  step(girl, dt); step(dog, dt); keepOrder();
   if (dog.ammo < AMMO.max) { dog.ammoT += dt; if (dog.ammoT >= AMMO.every) { dog.ammoT = 0; dog.ammo++; } } else dog.ammoT = 0;
 
   // poop tug: Sadie scoops it for its points; any that leave the screen behind her are Ky's
@@ -879,11 +995,11 @@ function update(dt) {
     const dx = Math.abs(p.x - (wx(girl) + 8)), dy = Math.abs(p.y - girl.y);
     if (p.born > .2 && dx < reach && (dy < 14 || (girl.scoopT > 0 && dy < 90)) && girl.stumbleT <= 0) {
       girl.score += p.value; girl.scooped++; girl.scoopFx = .28;
-      pop(p.x, p.y + 50, `+${p.value}`, '#e0559a', 'scooped!'); SFX.scoop(); S.poops.splice(i, 1); continue;
+      pop(p.x, p.y + 52, `SCOOP! +${p.value}`, '#e0559a', '', 22, { burst: '#fff' }); SFX.scoop(); S.poops.splice(i, 1); continue;
     }
     if (SX(p.x) < -30 * V.scale) {
       dog.score += p.value; girl.missed++; girl.oopsT = .8;
-      pop(S.cam + 40, p.y + 46, `+${p.value}`, '#c49a6c', 'for Ky'); SFX.miss(); S.poops.splice(i, 1);
+      pop(S.cam + 46, p.y + 46, `+${p.value}`, '#c78a52', 'for Ky', 22); SFX.miss(); S.poops.splice(i, 1);
     }
   }
   for (const f of S.fx) f.t += dt;
@@ -1062,7 +1178,7 @@ function setDiff(d) { S.diff = d; store.set('sp-diff', d); document.querySelecto
 document.querySelectorAll('#diff button').forEach(b => b.onclick = () => setDiff(b.dataset.d));
 setDiff(S.diff);
 function startGame(mode) {
-  audio();
+  audio(); goLandscape();
   S.mode = mode; reset();
   girl.cpu = mode === 'dog'; dog.cpu = mode === 'girl';
   const tag = r => (S.mode === 'duo' ? '' : (S.mode === r ? ' (you)' : ` (cpu, ${DIFF_NAME[S.diff].toLowerCase()})`));
@@ -1074,7 +1190,7 @@ function startGame(mode) {
 }
 function pauseGame() { if (S.phase !== 'play' && S.phase !== 'count') return; S.prev = S.phase; S.phase = 'paused'; $('paused').hidden = false; clearPads(); musicOff(); }
 function resumeGame() { if (S.phase !== 'paused') return; S.phase = S.prev || 'play'; $('paused').hidden = true; last = performance.now(); musicOn(); }
-function toMenu() { S.phase = 'menu'; S.mode = null; musicOff(); for (const id of ['end', 'paused', 'hud', 'pause', 'count', 'rotate']) $(id).hidden = true; $('menu').hidden = false; buildPads(); reset(); loadBoards(); checkVersion(); }
+function toMenu() { S.phase = 'menu'; S.mode = null; musicOff(); for (const id of ['end', 'paused', 'hud', 'pause', 'count']) $(id).hidden = true; $('menu').hidden = false; buildPads(); reset(); loadBoards(); checkVersion(); }
 $('pause').onclick = pauseGame; $('resume').onclick = resumeGame; $('quit').onclick = toMenu;
 document.querySelectorAll('.modes button').forEach(b => b.onclick = () => startGame(b.dataset.mode));
 $('again').onclick = () => startGame(S.mode); $('tomenu').onclick = toMenu;
@@ -1087,7 +1203,7 @@ const bestOf = role => +store.get('sp-best2-' + role) || 0;
 let endRun = null;
 function endGame() {
   S.phase = 'end'; clearPads(); buildPads(); musicOff(); SFX.end();
-  $('pause').hidden = true; $('count').hidden = true; $('rotate').hidden = true;
+  $('pause').hidden = true; $('count').hidden = true;
   const gs = girl.score, ds = dog.score, win = gs === ds ? null : gs > ds ? 'girl' : 'dog';
   let title = win ? `${NAMES[win]} wins!` : 'A tie!';
   if (S.mode !== 'duo' && win) title = win === S.mode ? `You win as ${NAMES[win]}!` : `The computer's ${NAMES[win]} wins`;
