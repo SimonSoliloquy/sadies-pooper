@@ -6,76 +6,74 @@
 <title>Sadie's Pooper</title>
 <meta name="description" content="A silly 1v1 side-on runner: Ky the dog poops brown swirls in sneaky spots, Sadie chases after them and scoops, from the living room to the garden gate.">
 <meta name="theme-color" content="#7cc95a">
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💩</text></svg>">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><g fill='%238a5530' stroke='%23120e0e' stroke-width='6'><ellipse cx='50' cy='80' rx='42' ry='15'/><ellipse cx='50' cy='58' rx='31' ry='13'/><ellipse cx='50' cy='38' rx='19' ry='11'/><path d='M46 28 Q52 8 62 18' fill='none'/></g></svg>">
 <link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Bangers&display=swap" rel="stylesheet">
 <style>
   :root { --girl: #e0559a; --dog: #2b211d; --ink: #120e0e; --paper: #fffaf0; --cap: #fff27a; --comic: Bangers, Impact, "Arial Black", system-ui, sans-serif; }
   * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-  html, body { margin: 0; height: 100%; overflow: hidden; background: #120e0e; font-family: ui-rounded, "SF Pro Rounded", "Nunito", system-ui, sans-serif; color: var(--ink); touch-action: none; user-select: none; -webkit-user-select: none; }
+  html, body { margin: 0; height: 100%; overflow: hidden; background: #120e0e; font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; color: var(--ink); touch-action: none; user-select: none; -webkit-user-select: none; }
   /* everything lives in #app; on a phone held upright the script turns #app sideways so the game always plays landscape */
   #app { position: fixed; left: 0; top: 0; width: 100%; height: 100%; overflow: hidden; transform-origin: 0 0; }
   #c { position: fixed; inset: 0; width: 100%; height: 100%; display: block; }
   button { font: inherit; cursor: pointer; }
   [hidden] { display: none !important; }
 
+  /* in-game captions: flat yellow boxes with a black border, like a comic's caption boxes */
   #hud { position: fixed; top: 0; left: 0; right: 0; padding: calc(env(safe-area-inset-top) + 6px) 52px 0; display: grid; grid-template-columns: 1fr minmax(110px, 1.3fr) 1fr; gap: 8px; align-items: start; pointer-events: none; max-width: 820px; margin: 0 auto; z-index: 3; }
-  .side { background: var(--cap); border: 3px solid var(--ink); border-radius: 3px; padding: 3px 10px 4px; min-width: 0; box-shadow: 4px 4px 0 var(--ink); }
-  .side.girl { box-shadow: inset 7px 0 0 var(--girl), 4px 4px 0 var(--ink); padding-left: 15px; }
-  .side.dog { box-shadow: inset -7px 0 0 #3a2c27, 4px 4px 0 var(--ink); text-align: right; padding-right: 15px; }
-  .who { font-family: var(--comic); font-size: 14px; letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+  .side, .mid { background: var(--cap); border: 3px solid var(--ink); padding: 3px 10px 4px; min-width: 0; }
+  .side.dog { text-align: right; }
+  .who { font-family: var(--comic); font-size: 15px; letter-spacing: .05em; text-transform: uppercase; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; line-height: 1.1; }
+  .girl .who { color: var(--girl); }
   .pts { font-family: var(--comic); font-size: 32px; line-height: .95; letter-spacing: .03em; font-variant-numeric: tabular-nums; }
-  .sub { font-size: 13px; font-weight: 800; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; min-height: 1.2em; }
-  .mid { text-align: center; background: #fffaf0; border: 3px solid var(--ink); border-radius: 3px; padding: 4px 10px 5px; box-shadow: 4px 4px 0 var(--ink); }
-  .track { position: relative; height: 10px; border-radius: 5px; border: 2px solid var(--ink); background: linear-gradient(90deg, #d9a066 0 27%, #b9d7de 27% 36%, #8fd16a 36%); margin: 4px 2px 3px; }
+  .sub { font-family: var(--comic); font-size: 14px; letter-spacing: .04em; white-space: nowrap; overflow: hidden; min-height: 18px; line-height: 18px; }
+  .sub svg { width: 15px; height: 15px; vertical-align: -2px; margin-left: 1px; }
+  .mid { background: var(--paper); text-align: center; }
+  .place { font-family: var(--comic); font-size: 15px; letter-spacing: .05em; text-transform: uppercase; line-height: 1.1; }
+  .track { position: relative; height: 10px; border: 2px solid var(--ink); background: linear-gradient(90deg, #d9a066 0 27%, #b9d7de 27% 36%, #8fd16a 36%); margin: 5px 2px 3px; }
   .track i { position: absolute; top: 50%; width: 16px; height: 16px; margin: -8px 0 0 -8px; border-radius: 50%; border: 2.5px solid var(--ink); }
   #tSadie { background: var(--girl); } #tKy { background: var(--dog); }
-  .place { font-size: 11px; font-weight: 900; opacity: .8; display: flex; justify-content: space-between; }
 
-  .corner { position: fixed; top: calc(env(safe-area-inset-top) + 8px); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--ink); background: rgba(255,250,240,.94); font-size: 17px; display: grid; place-items: center; z-index: 6; padding: 0; }
+  .corner { position: fixed; top: calc(env(safe-area-inset-top) + 8px); width: 40px; height: 40px; border-radius: 50%; border: 3px solid var(--ink); background: var(--paper); display: grid; place-items: center; z-index: 6; padding: 0; color: var(--ink); }
+  .corner svg { width: 20px; height: 20px; }
   #pause { left: 8px; } #mute { right: 8px; }
 
   .screen { position: fixed; inset: 0; display: grid; place-items: center; padding: 14px; background: rgba(43,36,32,.45); z-index: 10; overflow-y: auto; }
-  .card { background: var(--paper) radial-gradient(rgba(224,85,154,.13) 1.6px, transparent 1.9px) 0 0 / 9px 9px; border: 4px solid var(--ink); border-radius: 4px; padding: 16px 18px 12px; width: min(620px, 100%); box-shadow: 8px 8px 0 var(--ink); text-align: center; margin: auto; }
+  .card { background: var(--paper); border: 4px solid var(--ink); padding: 16px 20px 12px; width: min(560px, 100%); box-shadow: 8px 8px 0 var(--ink); text-align: center; margin: auto; }
   h1 { margin: 0; font-family: var(--comic); font-weight: 400; font-size: clamp(40px, 9vw, 60px); line-height: 1; letter-spacing: .03em; -webkit-text-stroke: 2px var(--ink); text-shadow: 4px 4px 0 var(--ink); transform: rotate(-2deg); }
   h1 .s { color: var(--girl); } h1 .p { color: #ffcf2e; }
   h2 { font-family: var(--comic); font-weight: 400; letter-spacing: .04em; }
-  .tag { margin: 6px 0 10px; font-weight: 800; opacity: .85; }
-  .modes { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .modes button, .btn { border: 3px solid var(--ink); border-radius: 6px; padding: 9px 8px; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 22px; color: #fff; -webkit-text-stroke: 1px var(--ink); box-shadow: 4px 4px 0 var(--ink); line-height: 1.1; }
-  .modes button small { display: block; font-family: ui-rounded, system-ui, sans-serif; letter-spacing: 0; -webkit-text-stroke: 0; font-weight: 800; font-size: 12px; opacity: .9; margin-top: 3px; }
-  .modes button:active, .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  .tag { margin: 8px 0 12px; font-family: var(--comic); font-size: 22px; letter-spacing: .05em; }
+  .modes { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .modes button, .btn { border: 3px solid var(--ink); padding: 9px 8px; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 24px; color: #fff; -webkit-text-stroke: 1px var(--ink); line-height: 1.1; }
+  .modes .m-duo { grid-column: 1 / -1; font-size: 18px; padding: 5px 8px; }
+  .modes button:active, .btn:active { transform: translateY(2px); }
   .m-girl { background: var(--girl); } .m-dog { background: var(--dog); } .m-duo { background: #8a5530; }
-  .diff { display: flex; justify-content: center; gap: 6px; margin: 10px 0 2px; align-items: center; font-weight: 900; font-size: 14px; flex-wrap: wrap; }
-  .diff button { border: 2.5px solid var(--ink); background: #fff; border-radius: 999px; padding: 3px 12px; font-weight: 900; font-size: 14px; color: var(--ink); }
-  .diff button.on { background: #4c9a2a; color: #fff; }
-  .btn { background: #4c9a2a; padding: 9px 18px; margin: 4px; }
+  .diff { display: flex; justify-content: center; gap: 4px; margin: 10px 0 2px; align-items: center; font-family: var(--comic); font-size: 17px; letter-spacing: .05em; }
+  .diff span { margin-right: 4px; }
+  .diff button { border: 2.5px solid var(--ink); background: #fff; padding: 2px 10px; font-family: var(--comic); font-size: 17px; letter-spacing: .05em; color: var(--ink); }
+  .diff button.on { background: var(--ink); color: var(--cap); }
+  .btn { background: #4c9a2a; padding: 8px 18px; margin: 4px; }
   .btn.alt { background: #8d6e63; }
-  .rules { text-align: left; font-size: 13.5px; line-height: 1.4; margin: 10px 0 4px; }
-  .rules p { margin: 5px 0; }
-  .rules b.s { color: var(--girl); } .rules b.k { color: #000; }
-  .keys { font-size: 12px; opacity: .75; }
-  .boards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 8px; text-align: left; }
-  .board { background: #f3ead8; border: 2.5px solid var(--ink); border-radius: 12px; padding: 6px 10px; font-size: 13px; min-width: 0; }
-  .board h3 { margin: 0 0 3px; font-size: 13px; }
-  .board ol { margin: 0; padding-left: 20px; }
+  .rules { font-size: 14px; line-height: 1.4; margin: 12px 0 0; }
+  .keys { font-size: 12px; opacity: .7; margin: 4px 0 0; }
+  .boards { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; text-align: left; }
+  .board { border-top: 3px solid var(--ink); padding: 4px 2px 0; font-size: 13px; min-width: 0; }
+  .board h3 { margin: 0 0 2px; font-family: var(--comic); font-weight: 400; font-size: 17px; letter-spacing: .05em; }
+  .board ol { margin: 0; padding: 0; list-style-position: inside; }
   .board li { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .board .me { font-weight: 900; margin-bottom: 3px; }
-  .by { font-size: 12px; opacity: .7; margin: 10px 0 0; }
+  .board .me { font-weight: 700; margin-bottom: 2px; }
+  .by { font-size: 12px; opacity: .6; margin: 10px 0 0; }
   .by a { color: inherit; }
-  #winner { margin: 0; font-size: 32px; }
-  #reason { margin: 4px 0 8px; font-weight: 800; opacity: .8; }
-  .final { display: flex; justify-content: center; gap: 12px; font-size: 18px; font-weight: 900; }
-  .final span { padding: 6px 12px; border-radius: 12px; color: #fff; border: 3px solid var(--ink); }
+  #winner { margin: 0; font-size: 40px; }
+  .final { display: flex; justify-content: center; gap: 10px; margin-top: 6px; font-family: var(--comic); font-size: 24px; letter-spacing: .05em; }
+  .final span { padding: 2px 12px; color: #fff; border: 3px solid var(--ink); -webkit-text-stroke: 1px var(--ink); }
   .final .g { background: var(--girl); } .final .d { background: var(--dog); }
-  #stats { font-size: 13.5px; margin: 10px 0 4px; line-height: 1.5; }
-  #pb { font-weight: 900; color: #c77d00; margin: 6px 0; }
+  #stats { font-size: 14px; margin: 10px 0 0; }
+  #pb { font-family: var(--comic); font-size: 20px; letter-spacing: .05em; margin: 8px 0 0; }
   #namebox { margin: 8px 0 2px; display: flex; gap: 6px; justify-content: center; }
-  #nick { font: inherit; font-size: 16px; padding: 7px 10px; border-radius: 12px; border: 2.5px solid var(--ink); width: 170px; background: #fff; }
-  #rank { font-size: 13px; font-weight: 800; margin: 4px 0; min-height: 1em; }
-
-  #toast { position: fixed; left: 50%; top: 26%; transform: translate(-50%, -50%); background: var(--cap); color: var(--ink); border: 3px solid var(--ink); padding: 5px 14px; border-radius: 3px; box-shadow: 4px 4px 0 var(--ink); font-weight: 900; font-size: 16px; pointer-events: none; opacity: 0; transition: opacity .2s; white-space: nowrap; z-index: 5; max-width: 94%; overflow: hidden; text-overflow: ellipsis; }
-  #toast.on { opacity: 1; }
+  #nick { font: inherit; font-size: 16px; padding: 6px 10px; border: 2.5px solid var(--ink); width: 170px; background: #fff; }
+  #rank { font-size: 13px; font-weight: 700; margin: 4px 0; min-height: 1em; }
   #count { position: fixed; inset: 0; display: grid; place-items: center; font-family: var(--comic); font-size: 130px; color: #ffcf2e; -webkit-text-stroke: 4px var(--ink); text-shadow: 7px 7px 0 var(--ink); pointer-events: none; z-index: 4; }
 
   #pads { position: fixed; inset: 0; z-index: 2; pointer-events: none; }
@@ -83,14 +81,19 @@
   .zone.split { border-right: 3px dashed rgba(255,255,255,.4); }
   .slide { position: fixed; width: 120px; height: 26px; margin: -13px 0 0 -60px; border-radius: 13px; background: rgba(255,255,255,.35); border: 3px solid rgba(29,26,26,.6); pointer-events: none; }
   .slide b { position: absolute; top: 50%; left: 50%; width: 34px; height: 34px; margin: -17px 0 0 -17px; border-radius: 50%; background: rgba(255,255,255,.9); border: 3px solid var(--ink); }
-  .hint { position: absolute; font-size: 13px; font-weight: 900; color: #fff; -webkit-text-stroke: .6px var(--ink); text-shadow: 0 2px 0 rgba(0,0,0,.35); pointer-events: none; white-space: nowrap; }
-  .pbtn { position: absolute; border-radius: 50%; border: 3px solid var(--ink); color: #fff; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 17px; -webkit-text-stroke: .8px var(--ink); box-shadow: 0 4px 0 var(--ink); display: grid; place-items: center; touch-action: none; line-height: 1.05; opacity: .93; padding: 0; }
-  .pbtn.big { width: 82px; height: 82px; font-size: 20px; } .pbtn.small { width: 64px; height: 64px; }
+  .hint { position: absolute; font-family: var(--comic); font-size: 17px; letter-spacing: .05em; color: #fff; -webkit-text-stroke: .8px var(--ink); pointer-events: none; white-space: nowrap; }
+  .pbtn { position: absolute; border-radius: 50%; border: 3px solid var(--ink); color: #fff; font-family: var(--comic); font-weight: 400; letter-spacing: .05em; font-size: 18px; -webkit-text-stroke: .8px var(--ink); display: grid; place-items: center; touch-action: none; line-height: 1.05; opacity: .93; padding: 0; }
+  .pbtn.big { width: 82px; height: 82px; font-size: 21px; } .pbtn.small { width: 64px; height: 64px; }
   .pbtn.girl { background: var(--girl); } .pbtn.dog { background: #4a3a33; } .pbtn.poop { background: #8a5530; } .pbtn.fart { background: #8b8a2e; }
   .pbtn.cool { opacity: .4; }
-  .pbtn.on { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+  .pbtn.on { transform: scale(.94); }
   .pbtn span { pointer-events: none; }
-  @media (max-width: 460px), (max-height: 420px) { .pts { font-size: 21px; } #hud { padding-left: 52px; padding-right: 52px; gap: 5px; } .side { padding: 2px 7px 3px; } .sub { font-size: 12px; } }
+  /* short and small are set by resize() from the game's own size: on an upright phone the page is only turned in CSS, so media queries see the wrong height */
+  .short .screen { padding: 6px; } .short .card { padding: 8px 14px 6px; } .short h1 { font-size: 36px; } .short .tag { margin: 2px 0 6px; font-size: 17px; }
+  .short .modes button { font-size: 19px; padding: 4px 8px; } .short .modes .m-duo { font-size: 15px; padding: 1px 8px; } .short .diff { margin-top: 6px; } .short .diff button { font-size: 15px; }
+  .short .rules { margin-top: 6px; font-size: 12.5px; } .short .keys { margin-top: 2px; } .short .boards { margin-top: 6px; } .short .board li:nth-child(n+4) { display: none; } .short .by { margin-top: 4px; }
+  .short #winner { font-size: 32px; } .short .final { font-size: 20px; } .short #pb { margin-top: 4px; } .short .btn { padding: 5px 16px; font-size: 20px; }
+  .small .pts { font-size: 22px; } .small #hud { gap: 5px; } .small .side, .small .mid { padding: 2px 7px 3px; }
 </style>
 </head>
 <body>
@@ -99,65 +102,58 @@
 
 <div id="hud" hidden>
   <div class="side girl"><div class="who" id="gwho">Sadie</div><div class="pts" id="gs">0</div><div class="sub" id="gsub"></div></div>
-  <div class="mid"><div class="place"><span>🛋️</span><span id="where">Living room</span><span>🚪</span></div><div class="track"><i id="tSadie"></i><i id="tKy"></i></div></div>
+  <div class="mid"><div class="place" id="where">Living room</div><div class="track"><i id="tSadie"></i><i id="tKy"></i></div></div>
   <div class="side dog"><div class="who" id="dwho">Ky</div><div class="pts" id="ds">0</div><div class="sub" id="dsub"></div></div>
 </div>
-<button class="corner" id="pause" hidden aria-label="Pause">⏸</button>
-<button class="corner" id="mute" aria-label="Sound on or off">🔊</button>
+<button class="corner" id="pause" hidden aria-label="Pause"><svg viewBox="0 0 20 20"><rect x="4" y="3" width="4" height="14" fill="currentColor"/><rect x="12" y="3" width="4" height="14" fill="currentColor"/></svg></button>
+<button class="corner" id="mute" aria-label="Sound on or off"></button>
 <div id="pads"></div>
-<div id="toast"></div>
 <div id="count" hidden></div>
 
 <div class="screen" id="menu">
   <div class="card">
     <h1><span class="s">Sadie's</span> <span class="p">Pooper</span></h1>
-    <p class="tag">Ky poops brown swirls in sneaky spots. Sadie chases after them with a bag. Race from the living room to the garden gate!</p>
+    <p class="tag">Ky poops. Sadie scoops.</p>
     <div class="modes">
-      <button class="m-girl" data-mode="girl">Play Sadie<small>vs computer Ky</small></button>
-      <button class="m-dog" data-mode="dog">Play Ky<small>vs computer Sadie</small></button>
-      <button class="m-duo" data-mode="duo">2 players<small>same screen</small></button>
+      <button class="m-girl" data-mode="girl">Play Sadie</button>
+      <button class="m-dog" data-mode="dog">Play Ky</button>
+      <button class="m-duo" data-mode="duo">2 players</button>
     </div>
-    <div class="diff" id="diff">Computer: <button data-d="easy">Easy</button><button data-d="normal">Normal</button><button data-d="hard">Hard</button></div>
-    <div class="rules">
-      <p><b>Poop tug:</b> every poop <b class="s">Sadie</b> scoops is a point for her; every one she misses is a point for <b class="k">Ky</b>. A poop on a sneaky spot (Sadie's shoes, the couch, the pink roses, the vegetable garden) is a big one worth 3. Most points at the garden gate wins.</p>
-      <p><b class="k">Ky</b>: Jump, Poop, and a fart-boost dash. 3 poops to start, one more every 4 seconds. 🍗 scraps: +2 poops. 🌶️ chilli: next poop is a giant golden swirl worth 5.</p>
-      <p><b class="s">Sadie</b>: Jump and a hair-whoosh dash; run over poop to scoop it. 🦮 leash: snaps onto Ky, no pooping for 4 seconds. 🧹 pooper-scooper: longer reach for 6 seconds.</p>
-      <p>Slide your thumb left and right on your side of the screen to push ahead or fall back. Ky always runs ahead: Sadie can't get past him. Bump a toy or a flower pot and you tumble. Tap Ky to make Ky bark. Hard ×1.5 and Easy ×0.75 on the high scores.</p>
-      <p class="keys">Keys. Sadie: A/D move · W jump · S whoosh. Ky: ←/→ move · ↑ jump · ↓ poop · Right Shift fart. Alone: arrows or WASD, Space jump, Shift dash, Enter poop.</p>
-    </div>
+    <div class="diff" id="diff"><span>Computer</span><button data-d="easy">Easy</button><button data-d="normal">Normal</button><button data-d="hard">Hard</button></div>
+    <p class="rules">Sadie scores for every poop she scoops, Ky for every one she misses. Most points at the garden gate wins.</p>
+    <p class="keys" id="howTouch">Slide your thumb to move. Tap Ky to bark.</p>
+    <p class="keys" id="howKeys">Arrows move, Space jumps, Shift dashes, Enter poops. Two players: Sadie on WASD, Ky on the arrows.</p>
     <div class="boards">
-      <div class="board"><h3>🏆 Best Sadies</h3><div class="me" id="pbGirl"></div><ol id="topGirl"><li>Loading…</li></ol></div>
-      <div class="board"><h3>🏆 Best Kys</h3><div class="me" id="pbDog"></div><ol id="topDog"><li>Loading…</li></ol></div>
+      <div class="board"><h3>Best Sadies</h3><div class="me" id="pbGirl"></div><ol id="topGirl"><li>Loading</li></ol></div>
+      <div class="board"><h3>Best Kys</h3><div class="me" id="pbDog"></div><ol id="topDog"><li>Loading</li></ol></div>
     </div>
-    <p class="by"><span id="ver"></span> · by <a href="https://simonsoliloquy.com" target="_blank" rel="noopener">simonsoliloquy.com</a></p>
+    <p class="by">by <a href="https://simonsoliloquy.com" target="_blank" rel="noopener">simonsoliloquy.com</a></p>
   </div>
 </div>
 
 <div class="screen" id="paused" hidden>
-  <div class="card"><h2 style="margin:0 0 10px">Paused</h2><button class="btn" id="resume">Resume</button><button class="btn alt" id="quit">Quit to menu</button></div>
+  <div class="card"><h2 style="margin:0 0 10px">Paused</h2><button class="btn" id="resume">Resume</button><button class="btn alt" id="quit">Menu</button></div>
 </div>
 
 <div class="screen" id="end" hidden>
   <div class="card">
     <h2 id="winner">Sadie wins!</h2>
-    <p id="reason">At the garden gate</p>
     <div class="final"><span class="g" id="fg">Sadie 0</span><span class="d" id="fd">Ky 0</span></div>
     <div id="stats"></div>
     <p id="pb" hidden></p>
-    <div id="namebox" hidden><input id="nick" maxlength="20" placeholder="Your name" autocomplete="nickname"><button class="btn" id="save" style="margin:0">Save score</button></div>
+    <div id="namebox" hidden><input id="nick" maxlength="20" placeholder="Your name" autocomplete="nickname"><button class="btn" id="save" style="margin:0">Save</button></div>
     <p id="rank"></p>
     <div class="boards" id="endboards" hidden>
-      <div class="board"><h3 id="ebTodayH">Today</h3><ol id="ebToday"></ol></div>
+      <div class="board"><h3>Today</h3><ol id="ebToday"></ol></div>
       <div class="board"><h3>All time</h3><ol id="ebAll"></ol></div>
     </div>
     <div style="margin-top:10px"><button class="btn" id="again">Play again</button><button class="btn alt" id="tomenu">Menu</button></div>
-    <p class="by">Built by <a href="https://simonsoliloquy.com" target="_blank" rel="noopener">simonsoliloquy.com</a></p>
   </div>
 </div>
 </div>
 
 <script type="module">
-const VERSION = 'v2026-11-18c';
+const VERSION = 'v2026-11-18d';
 const $ = id => document.getElementById(id);
 const store = {
   get(k) { try { return localStorage.getItem(k); } catch { return null; } },
@@ -233,6 +229,7 @@ function resize() {
   APP.rot = isTouch && ph > pw;
   const w = APP.rot ? ph : pw, h = APP.rot ? pw : ph;
   APP.w = w; APP.h = h;
+  $('app').classList.toggle('short', h < 460); $('app').classList.toggle('small', w < 460 || h < 420);
   Object.assign($('app').style, APP.rot ? { width: w + 'px', height: h + 'px', transform: `translateX(${pw}px) rotate(90deg)` } : { width: '100%', height: '100%', transform: '' });
   V.dpr = dpr; cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr);
   const aspect = w / h;
@@ -758,7 +755,7 @@ function drawFx() {
     ctx.lineWidth = Math.max(3, size * .2); ctx.strokeStyle = INK; ctx.fillStyle = f.color;
     if (!f.burst && !f.bubble) { ctx.fillStyle = INK; ctx.fillText(f.text, size * .07, size * .07); ctx.fillStyle = f.color; }
     ctx.strokeText(f.text, 0, 0); ctx.fillText(f.text, 0, 0);
-    if (f.sub) { ctx.font = `900 ${12 * sc}px system-ui`; ctx.lineWidth = 4 * sc; const sy = f.burst ? size * .95 : size * .7; ctx.strokeText(f.sub, 0, sy); ctx.fillStyle = '#fff'; ctx.fillText(f.sub, 0, sy); }
+    if (f.sub) { ctx.font = `${15 * sc}px ${COMIC_FONT}`; ctx.lineWidth = 4 * sc; const sy = f.burst ? size * .95 : size * .7; ctx.strokeText(f.sub, 0, sy); ctx.fillStyle = '#fff'; ctx.fillText(f.sub, 0, sy); }
     ctx.restore();
     ctx.globalAlpha = 1;
   }
@@ -813,6 +810,7 @@ const KEYMAP = {
 // ---------- input: touch (thumb slide + buttons, one side each for two players) ----------
 const pads = [];
 const isTouch = matchMedia('(pointer: coarse)').matches || 'ontouchstart' in window;
+$('howTouch').hidden = !isTouch; $('howKeys').hidden = isTouch;
 function buildPads() {
   const host = $('pads'); host.innerHTML = ''; pads.length = 0;
   document.querySelectorAll('.slide').forEach(e => e.remove());
@@ -827,7 +825,7 @@ function buildPads() {
     const pad = { role, zone, move: 0, btn: { jump: false, dash: false, act: false }, el: {}, id: null };
     // buttons sit in the outer bottom corner of that player's side (one player: on the right)
     const side = two ? (role === 'girl' ? 'left' : 'right') : 'right';
-    const list = role === 'dog' ? [['jump', 'Jump', 'big', 'dog', 14, 18], ['act', 'Poop', 'big', 'poop', 104, 18], ['dash', 'Fart!', 'small', 'fart', 24, 110]]
+    const list = role === 'dog' ? [['jump', 'Jump', 'big', 'dog', 14, 18], ['act', 'Poop', 'big', 'poop', 104, 18], ['dash', 'Fart', 'small', 'fart', 24, 110]]
       : [['jump', 'Jump', 'big', 'girl', 14, 18], ['dash', 'Whoosh', 'small', 'girl', 104, 26]];
     for (const [k, label, size, cls, off, bottom] of list) {
       const b = document.createElement('button'); b.className = `pbtn ${size} ${cls}`; b.innerHTML = `<span>${label}</span>`;
@@ -837,7 +835,7 @@ function buildPads() {
       b.addEventListener('pointerdown', down); b.addEventListener('pointerup', up); b.addEventListener('pointercancel', up); b.addEventListener('pointerleave', up);
       zone.appendChild(b); pad.el[k] = b;
     }
-    const hint = document.createElement('div'); hint.className = 'hint'; hint.textContent = (two ? NAMES[role] + ': ' : '') + '⟵ slide your thumb ⟶';
+    const hint = document.createElement('div'); hint.className = 'hint'; hint.textContent = (two ? NAMES[role] + ': ' : '') + 'slide to move';
     hint.style[side === 'left' ? 'right' : 'left'] = '16px'; hint.style.bottom = 'calc(30px + env(safe-area-inset-bottom))';
     zone.appendChild(hint);
     zone.addEventListener('pointerdown', e => {
@@ -881,11 +879,10 @@ function bark() { if (dog.barkT > 0) return; dog.barkT = .35; SFX.woof(); pop(wx
 const couchAt = x => LEVEL.couches.find(c => x > c.x && x < c.x + c.w);
 const surfaceAtX = x => { const c = couchAt(x); return c ? c.top : 0; };
 function zoneAt(x, y) { return LEVEL.zones.find(z => x > z.x && x < z.x + z.w && (z.onCouch ? y > 20 : y < 20)) || null; }
-function say(a, msg) { if (!a.cpu) toast(msg, 1.1); }
 function stumble(a, what) {
   if (a.blinkT > 0 || a.stumbleT > 0) return;
   a.stumbleT = .5; a.dashT = 0; a.stumbles++; a.vy = Math.max(a.vy, 260); a.ground = false;
-  SFX.bonk(); say(a, `${NAMES[a.role]} tripped on ${what}!`); pop(wx(a) + 20, a.y + ART.h[a.role] * .8, 'BONK!', '#ff5a3c', '', 20, { burst: '#fff27a' });
+  SFX.bonk(); pop(wx(a) + 20, a.y + ART.h[a.role] * .8, 'BONK!', '#ff5a3c', '', 20, { burst: '#fff27a' });
 }
 function step(a, dt) {
   const D = DASH[a.role];
@@ -927,7 +924,7 @@ function step(a, dt) {
   }
   for (const k of LEVEL.couches) { const key = a.role + 'c' + k.id; if (!S.hits.has(key) && front > k.x + 4 && front < k.x + 30 && a.y < k.top - 12) { S.hits.add(key); stumble(a, 'the couch'); } }
   // fell off the left of the screen: pop back in
-  if (a.sx < -SIZE[a.role].w) { a.sx = 34; a.y = Math.max(a.y, 120); a.vy = 0; a.ground = false; a.blinkT = 1.2; a.stumbleT = 0; a.knock = 0; say(a, `${NAMES[a.role]} caught up!`); }
+  if (a.sx < -SIZE[a.role].w) { a.sx = 34; a.y = Math.max(a.y, 120); a.vy = 0; a.ground = false; a.blinkT = 1.2; a.stumbleT = 0; a.knock = 0; }
 
   // power-ups (each works only for its own player)
   for (const it of S.items) {
@@ -948,17 +945,17 @@ function keepOrder() {
 }
 function takeItem(a, it) {
   SFX.pup();
-  if (it.kind === 'scraps') { a.ammo = Math.min(AMMO.cap, a.ammo + AMMO.scraps); pop(it.x, it.y + 20, 'NOM! +2', '#ffb04a', '', 20, { burst: '#fff27a' }); say(a, 'Food scraps! +2 poops'); }
-  if (it.kind === 'chilli') { a.gold = true; pop(it.x, it.y + 20, 'CHILLI!', '#e53935', '', 22, { burst: '#fff27a' }); say(a, 'Chilli! The next poop is a giant golden swirl'); }
+  if (it.kind === 'scraps') { a.ammo = Math.min(AMMO.cap, a.ammo + AMMO.scraps); pop(it.x, it.y + 20, 'NOM!', '#ffb04a', '+2 poops', 22, { burst: '#fff27a' }); }
+  if (it.kind === 'chilli') { a.gold = true; pop(it.x, it.y + 20, 'CHILLI!', '#e53935', 'golden poop next', 22, { burst: '#fff27a' }); }
   if (it.kind === 'leash') {
     a.leashes++; dog.leashT = LEASH_T; dog.knock = -260; SFX.woof();
-    pop(wx(dog), dog.y + 100, 'SNAP! LEASHED!', '#e53935', '', 22, { burst: '#fff' }); toast('Leash! Ky can\'t poop for 4 seconds', 1.2);
+    pop(wx(dog), dog.y + 100, 'LEASHED!', '#e53935', 'no pooping', 22, { burst: '#fff' });
   }
-  if (it.kind === 'scooper') { a.scoopT = SCOOP_T; pop(it.x, it.y + 20, 'SCOOPER!', '#58b24a', '', 22, { burst: '#fff27a' }); say(a, 'Pooper-scooper! Longer reach for 6 seconds'); }
+  if (it.kind === 'scooper') { a.scoopT = SCOOP_T; pop(it.x, it.y + 20, 'SCOOPER!', '#58b24a', 'longer reach', 22, { burst: '#fff27a' }); }
 }
 function tryPoop(a) {
-  if (a.leashT > 0) { say(a, 'Leashed! No pooping'); return; }
-  if (a.ammo <= 0) { say(a, 'No poop ready'); return; }
+  if (a.leashT > 0) return;
+  if (a.ammo <= 0) return;
   if (a.squatT > 0) return;
   a.ammo--; a.squatT = .22; a.dropped++;
   const x = wx(a) - SIZE.dog.w * .45, land = a.ground ? a.y : surfaceAtX(x);
@@ -1068,21 +1065,23 @@ function think(a, dt) {
 // ---------- HUD ----------
 function hud() {
   $('gs').textContent = girl.score; $('ds').textContent = dog.score;
-  const g = []; if (girl.scoopT > 0) g.push(`🧹 ${Math.ceil(girl.scoopT)}s`); g.push(girl.dashCd <= 0 ? 'whoosh ✓' : 'whoosh …');
-  $('gsub').textContent = g.join(' ');
-  const d = []; if (dog.leashT > 0) d.push(`🦮 ${Math.ceil(dog.leashT)}s`); else d.push(dog.ammo ? '💩'.repeat(dog.ammo) : 'no poop'); if (dog.gold) d.push('🌶️');
-  $('dsub').textContent = d.join(' ');
+  setText('gsub', girl.scoopT > 0 ? `Scooper ${Math.ceil(girl.scoopT)}` : '');
+  // Ky's poops ready, drawn as little swirls (the first is gold after a chilli)
+  setHTML('dsub', dog.leashT > 0 ? `Leashed ${Math.ceil(dog.leashT)}` : dog.ammo ? Array.from({ length: dog.ammo }, (_, i) => swirl(dog.gold && i === 0)).join('') : 'Empty');
   const prog = x => clamp(x / GATE * 100, 0, 100) + '%';
   $('tSadie').style.left = prog(wx(girl)); $('tKy').style.left = prog(wx(dog));
   $('where').textContent = sectionAt(S.cam + V.w / 2).label;
   for (const p of pads) {
     const a = p.role === 'girl' ? girl : dog;
     p.el.dash?.classList.toggle('cool', a.dashCd > 0);
-    if (p.el.act) { p.el.act.classList.toggle('cool', a.ammo <= 0 || a.leashT > 0); p.el.act.firstChild.textContent = a.leashT > 0 ? 'Leashed' : `Poop ${a.ammo}`; }
+    if (p.el.act) { p.el.act.classList.toggle('cool', a.ammo <= 0 || a.leashT > 0); }
   }
 }
-let toastT = 0;
-function toast(msg, secs = 1.2) { const t = $('toast'); t.textContent = msg; t.classList.add('on'); clearTimeout(toastT); toastT = setTimeout(() => t.classList.remove('on'), secs * 1000); }
+// only touch the DOM when the text changes (hud() runs every frame)
+const shown = {};
+function setText(id, t) { if (shown[id] !== t) { shown[id] = t; $(id).textContent = t; } }
+function setHTML(id, h) { if (shown[id] !== h) { shown[id] = h; $(id).innerHTML = h; } }
+const swirl = gold => `<svg viewBox="0 0 20 20"><g fill="${gold ? '#ffd23f' : '#8a5530'}" stroke="#120e0e" stroke-width="1.6"><ellipse cx="10" cy="15.5" rx="8.5" ry="3.5"/><ellipse cx="10" cy="10.5" rx="6" ry="3"/><ellipse cx="10" cy="6" rx="3.5" ry="2.5"/></g></svg>`;
 
 // ---------- sound: effects made in code; music is Lyria's loop (music/loop.mp3) when present, else a code-made oompah loop ----------
 let AC = null, master = null, sfxBus = null, musicBus = null;
@@ -1166,7 +1165,7 @@ function musicOn() {
   } else if (!MUSIC.timer) { MUSIC.next = AC.currentTime + .05; MUSIC.step = 0; MUSIC.timer = setInterval(musicTick, 100); }
 }
 function musicOff() { if (MUSIC.el) MUSIC.el.pause(); if (MUSIC.timer) { clearInterval(MUSIC.timer); MUSIC.timer = 0; } }
-const setMuteIcon = () => { $('mute').textContent = muted() ? '🔇' : '🔊'; };
+const setMuteIcon = () => { $('mute').innerHTML = `<svg viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 7h4l5-4v14l-5-4H2z" fill="currentColor" stroke="none"/>${muted() ? '<path d="M14 7l5 6M19 7l-5 6"/>' : '<path d="M14 6.5q2.5 3.5 0 7M16.5 4q4.5 6 0 12"/>'}</svg>`; };
 $('mute').onclick = () => {
   store.set('sp-mute', muted() ? '0' : '1'); setMuteIcon(); audio();
   if (master) master.gain.value = muted() ? 0 : .6; if (MUSIC.el) MUSIC.el.muted = muted();
@@ -1181,7 +1180,7 @@ function startGame(mode) {
   audio(); goLandscape();
   S.mode = mode; reset();
   girl.cpu = mode === 'dog'; dog.cpu = mode === 'girl';
-  const tag = r => (S.mode === 'duo' ? '' : (S.mode === r ? ' (you)' : ` (cpu, ${DIFF_NAME[S.diff].toLowerCase()})`));
+  const tag = r => (S.mode === r ? ' (you)' : '');
   $('gwho').textContent = 'Sadie' + tag('girl'); $('dwho').textContent = 'Ky' + tag('dog');
   for (const id of ['menu', 'end', 'paused']) $(id).hidden = true;
   $('hud').hidden = false; $('pause').hidden = false;
@@ -1205,21 +1204,20 @@ function endGame() {
   S.phase = 'end'; clearPads(); buildPads(); musicOff(); SFX.end();
   $('pause').hidden = true; $('count').hidden = true;
   const gs = girl.score, ds = dog.score, win = gs === ds ? null : gs > ds ? 'girl' : 'dog';
-  let title = win ? `${NAMES[win]} wins!` : 'A tie!';
-  if (S.mode !== 'duo' && win) title = win === S.mode ? `You win as ${NAMES[win]}!` : `The computer's ${NAMES[win]} wins`;
-  $('winner').textContent = title; $('reason').textContent = 'At the garden gate';
+  $('winner').textContent = !win ? 'Tie!' : S.mode !== 'duo' && win === S.mode ? 'You win!' : `${NAMES[win]} wins!`;
   $('fg').textContent = `Sadie ${gs}`; $('fd').textContent = `Ky ${ds}`;
-  $('stats').innerHTML = `Ky pooped <b>${dog.dropped}</b>${dog.golds ? ` (${dog.golds} golden)` : ''} · Sadie scooped <b>${girl.scooped}</b> · missed <b>${girl.missed}</b><br>Leashes <b>${girl.leashes}</b> · tumbles: Sadie ${girl.stumbles}, Ky ${dog.stumbles}`;
+  $('stats').textContent = `Ky pooped ${dog.dropped}. Sadie scooped ${girl.scooped} and missed ${girl.missed}.`;
   $('pb').hidden = true; $('namebox').hidden = true; $('rank').textContent = ''; $('endboards').hidden = true;
   endRun = null;
   if (S.mode !== 'duo') {
     const role = S.mode, raw = (role === 'girl' ? girl : dog).score, mult = DIFF[S.diff].mult, score = Math.round(raw * mult), prev = bestOf(role);
-    let line2 = `${DIFF_NAME[S.diff]}: ${raw} × ${mult} = ${score}. `;
-    if (score > prev) { store.set('sp-best2-' + role, String(score)); line2 += prev ? `New best as ${NAMES[role]}! (was ${prev})` : `First score as ${NAMES[role]}!`; }
-    else line2 += `Your best as ${NAMES[role]}: ${prev}`;
+    // Easy and Hard change the score (x0.75, x1.5), so name them; Normal needs no word
+    let line2 = `Score ${score}${S.diff === 'normal' ? '' : ' on ' + DIFF_NAME[S.diff]}. `;
+    if (score > prev) { store.set('sp-best2-' + role, String(score)); line2 += 'New best!'; }
+    else line2 += `Best ${prev}.`;
     $('pb').hidden = false; $('pb').textContent = line2;
     endRun = { role, sent: false, run: { player: playerId(), score, raw, difficulty: S.diff, dropped: dog.dropped, scooped: girl.scooped, missed: girl.missed, won: win === role, seconds: Math.round(S.t), version: VERSION } };
-    if (score > 0) { $('namebox').hidden = false; $('nick').value = playerName(); $('rank').textContent = 'Save your score to see where you rank'; }
+    if (score > 0) { $('namebox').hidden = false; $('nick').value = playerName(); }
     showEndBoards(role);
   }
   setTimeout(() => { if (S.phase === 'end') $('end').hidden = false; }, 600);
@@ -1227,27 +1225,27 @@ function endGame() {
 $('save').onclick = async () => {
   const st = endRun; if (!st || st.sent) return; st.sent = true;
   const name = $('nick').value.trim().slice(0, 20); store.set('sp-name', name);
-  $('save').disabled = true; $('rank').textContent = 'Saving…';
+  $('save').disabled = true; $('rank').textContent = 'Saving';
   const res = await LB.submit(st.role, { ...st.run, name: name || null });
   $('save').disabled = false; $('namebox').hidden = true;
-  $('rank').textContent = res ? `#${res.rankDaily ?? '?'} today · #${res.rankAllTime ?? '?'} of ${res.totalPlayers ?? '?'} all time as ${NAMES[st.role]}` : 'Could not reach the leaderboard (your best is kept on this device)';
+  $('rank').textContent = res ? `#${res.rankDaily ?? '?'} today, #${res.rankAllTime ?? '?'} all time` : 'The scoreboard is offline. Your best is saved on this phone.';
   showEndBoards(st.role);
 };
 $('nick').addEventListener('keydown', e => { if (e.key === 'Enter') $('save').click(); });
 async function showEndBoards(role) {
   const [day, all] = await Promise.all([LB.top(role, 'daily', 5), LB.top(role, 'alltime', 5)]);
   if (!day && !all) return;
-  $('endboards').hidden = false; $('ebTodayH').textContent = `Today's best ${NAMES[role]}s`;
+  $('endboards').hidden = false;
   fillList($('ebToday'), day); fillList($('ebAll'), all);
 }
 function fillList(ol, rows) {
   ol.innerHTML = '';
-  if (!rows) { ol.innerHTML = '<li>Leaderboard offline</li>'; return; }
+  if (!rows) { ol.innerHTML = '<li>Offline</li>'; return; }
   if (!rows.length) { ol.innerHTML = '<li>No scores yet</li>'; return; }
-  for (const r of rows) { const li = document.createElement('li'); li.textContent = `${r.name || 'Anonymous'}: ${r.score}${r.difficulty ? ' · ' + DIFF_NAME[r.difficulty] : ''}`; ol.appendChild(li); }
+  for (const r of rows) { const li = document.createElement('li'); li.textContent = `${r.name || 'Anonymous'} ${r.score}`; ol.appendChild(li); }
 }
 async function loadBoards() {
-  for (const role of ['girl', 'dog']) { const b = bestOf(role); $(role === 'girl' ? 'pbGirl' : 'pbDog').textContent = b ? `Your best: ${b}` : 'No score yet'; }
+  for (const role of ['girl', 'dog']) { const b = bestOf(role); $(role === 'girl' ? 'pbGirl' : 'pbDog').textContent = b ? `Your best ${b}` : ''; }
   const [g, d] = await Promise.all([LB.top('girl', 'alltime', 5), LB.top('dog', 'alltime', 5)]);
   fillList($('topGirl'), g); fillList($('topDog'), d);
 }
@@ -1296,7 +1294,6 @@ function frame(now) {
   requestAnimationFrame(frame);
 }
 addEventListener('resize', resize);
-$('ver').textContent = VERSION;
 reset(); resize(); loadBoards(); checkVersion();
 requestAnimationFrame(frame);
 

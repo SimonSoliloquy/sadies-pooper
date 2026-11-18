@@ -8,6 +8,7 @@ A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead poopin
 ## Feel
 - Silly and mild: cute brown swirl poops, stink lines, no splatter.
 - Comic-book art (Simon, 2026-11-18: "more comic book style"): heavy ink outlines, hard-edged shadows with halftone dots, a blue rim light on Ky's glossy black fur, a Ben-Day-dot sky, a black panel frame, and sound effects lettered in bursts and speech bubbles (PLOP!, SCOOP!, PFFFT!, BONK!, WOOF!).
+- Little text, nothing that looks vibe-coded (Simon, 2026-11-18, from his saved posts "30 reasons your site looks vibecoded" and "Stop Slop"). The menu is a title, one tagline, the play buttons, one line of rules and one line of controls. No emojis anywhere (icons are drawn), no pop-up toasts (a power-up's comic burst carries a short line saying what it does), no `·` separators, check marks or arrow characters, no coloured side stripes, pill buttons or dot-grid backgrounds, square corners, and one hard shadow on the card only. Ky's poops ready show as small drawn swirls in the score box.
 - Ky's dash is a **fart boost**, with a honk and a little brown cloud. The cloud is just for looks.
 - Sadie's dash is a **hair-whoosh**: her curly hair spins like a propeller.
 - Tapping Ky makes Ky bark.
