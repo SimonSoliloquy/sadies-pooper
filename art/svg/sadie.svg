@@ -1,0 +1,84 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 440" width="320" height="440">
+  <!-- Sadie: adult, very long wavy golden hair, denim jacket over a striped top, dark navy flared jeans. Faces right, running.
+       Limbs are drawn twice (a wide dark stroke, then a narrower coloured one) so they get smooth bold outlines and can bend for animation. -->
+  <defs>
+    <clipPath id="topClip"><path d="M192 150 L212 152 L216 238 L198 240 Z"/></clipPath>
+  </defs>
+  <g stroke-linejoin="round" stroke-linecap="round">
+    <!-- hair streaming behind: big soft waves down past the waist -->
+    <g id="hairBack" stroke="#1d1a1a" stroke-width="5">
+      <path fill="#f2c14e" d="M180 46 C146 34 112 52 106 88
+        Q86 100 96 118 Q76 130 88 150 Q66 162 80 182 Q60 196 74 214 Q54 230 70 248 Q52 264 66 280 Q54 298 64 314
+        Q84 306 90 290 Q108 286 106 268 Q124 262 120 244 Q138 238 132 220 Q150 214 144 196 Q162 190 156 172 Q172 164 166 146 Q178 134 174 120 Z"/>
+      <path fill="none" stroke="#c98f1f" stroke-width="3" d="M126 84 Q106 104 116 124 Q98 142 108 160 Q90 178 100 196 Q82 214 92 232 Q76 250 84 270"/>
+      <path fill="none" stroke="#c98f1f" stroke-width="3" d="M150 92 Q132 112 142 130 Q124 148 134 166 Q118 184 126 204"/>
+    </g>
+    <!-- back arm, swinging back -->
+    <g id="armBack">
+      <path fill="none" stroke="#1d1a1a" stroke-width="30" d="M170 154 Q152 182 136 206"/>
+      <path fill="none" stroke="#3a66a3" stroke-width="21" d="M170 154 Q152 182 136 206"/>
+      <circle cx="131" cy="214" r="11" fill="#f0c4a4" stroke="#1d1a1a" stroke-width="5"/>
+    </g>
+    <!-- back leg, pushing off behind, flared hem -->
+    <g id="legBack">
+      <path fill="none" stroke="#1d1a1a" stroke-width="33" d="M168 238 Q150 278 136 300 Q118 324 104 344"/>
+      <path fill="none" stroke="#162246" stroke-width="24" d="M168 238 Q150 278 136 300 Q118 324 104 344"/>
+      <path fill="#162246" stroke="#1d1a1a" stroke-width="5" d="M96 330 L118 346 L110 366 L80 360 Z"/>
+      <path fill="#eceae3" stroke="#1d1a1a" stroke-width="5" d="M74 358 C76 346 100 346 112 356 L112 370 L72 372 Z"/>
+    </g>
+    <!-- jacket, oversized -->
+    <g id="body" stroke="#1d1a1a" stroke-width="5">
+      <path fill="#4f86c9" d="M150 140 C162 130 198 130 212 140 C222 170 224 214 222 246 C198 256 160 256 138 246 C134 210 138 168 150 140 Z"/>
+      <g clip-path="url(#topClip)" stroke="none">
+        <rect x="186" y="146" width="34" height="96" fill="#efe2c4"/>
+        <rect x="186" y="156" width="34" height="7" fill="#7a5a3c"/><rect x="186" y="172" width="34" height="7" fill="#7a5a3c"/>
+        <rect x="186" y="188" width="34" height="7" fill="#7a5a3c"/><rect x="186" y="204" width="34" height="7" fill="#7a5a3c"/>
+        <rect x="186" y="220" width="34" height="7" fill="#7a5a3c"/>
+      </g>
+      <path fill="none" d="M192 150 L198 240"/>
+      <path fill="#3f72b3" d="M156 140 L180 150 L172 168 L150 152 Z"/>
+      <path fill="#3f72b3" d="M198 136 L214 142 L210 160 L194 150 Z"/>
+      <path fill="none" stroke="#a9c6ea" stroke-width="2.5" stroke-dasharray="5 4" d="M146 236 C166 244 198 244 216 236"/>
+      <rect x="156" y="180" width="22" height="18" rx="3" fill="#3f72b3" stroke-width="3"/>
+      <circle cx="202" cy="172" r="3" fill="#d9b44a" stroke-width="2"/>
+      <circle cx="203" cy="198" r="3" fill="#d9b44a" stroke-width="2"/>
+    </g>
+    <!-- front leg, knee up, big flare -->
+    <g id="legFront">
+      <path fill="none" stroke="#1d1a1a" stroke-width="35" d="M186 240 Q218 262 228 290 Q230 320 226 348"/>
+      <path fill="none" stroke="#22325f" stroke-width="26" d="M186 240 Q218 262 228 290 Q230 320 226 348"/>
+      <path fill="#22325f" stroke="#1d1a1a" stroke-width="5" d="M212 340 L240 340 L254 372 L204 374 Z"/>
+      <path fill="#eceae3" stroke="#1d1a1a" stroke-width="5" d="M206 372 C208 360 240 358 256 366 L260 380 L204 382 Z"/>
+    </g>
+    <!-- neck and head -->
+    <path fill="#f6d2b5" stroke="#1d1a1a" stroke-width="5" d="M174 112 L194 112 L196 140 L172 140 Z"/>
+    <g id="head" stroke="#1d1a1a">
+      <ellipse cx="186" cy="84" rx="36" ry="40" fill="#f8d8bd" stroke-width="5"/>
+      <path fill="none" stroke-width="3.5" d="M196 64 C202 60 210 61 215 65"/>
+      <path fill="#ffffff" stroke-width="3" d="M196 76 C200 69 211 69 216 76 C211 82 200 82 196 76 Z"/>
+      <circle cx="207" cy="76" r="5" fill="#3d8fd6"/>
+      <circle cx="208" cy="76" r="2.2" fill="#1d1a1a"/>
+      <circle cx="209.5" cy="74.5" r="1.1" fill="#fff" stroke="none"/>
+      <path fill="none" stroke-width="2.5" d="M197 71 L193 67 M200 69 L198 64.5 M204 68.5 L203.5 64"/>
+      <path fill="none" stroke-width="3.5" d="M219 80 C225 88 225 95 218 97"/>
+      <path fill="#fff" stroke-width="3.5" d="M200 106 C206 113 215 112 219 104 C212 106 206 106 200 106 Z"/>
+      <path fill="none" stroke="#d9707a" stroke-width="3" d="M201 104 C207 102 213 102 219 102"/>
+      <ellipse cx="202" cy="94" rx="7" ry="4" fill="#f4a3a3" stroke="none" opacity=".7"/>
+      <g fill="#c98a5e" stroke="none">
+        <circle cx="206" cy="88" r="1.4"/><circle cx="211" cy="90" r="1.4"/><circle cx="215" cy="87" r="1.4"/><circle cx="201" cy="90" r="1.2"/><circle cx="209" cy="85" r="1.1"/>
+      </g>
+    </g>
+    <!-- hair over the top of the head, a side sweep, and one wavy lock over the shoulder -->
+    <g id="hairFront" stroke="#1d1a1a" stroke-width="5">
+      <path fill="#f2c14e" d="M150 96 C140 58 166 36 198 42 C216 46 226 56 224 66 C212 56 196 54 186 58 C176 66 178 80 172 92 C168 106 174 120 166 134 C158 122 152 110 150 96 Z"/>
+      <path fill="#f2c14e" d="M170 96 Q182 108 172 120 Q186 132 176 146 Q190 158 180 172 Q194 184 184 198 Q174 192 170 180 Q160 170 166 158 Q154 146 164 134 Q152 122 162 110 Z"/>
+      <path fill="none" stroke="#c98f1f" stroke-width="3" d="M168 50 C186 44 204 48 216 58"/>
+    </g>
+    <!-- front arm, bent and pumping forward -->
+    <g id="armFront">
+      <path fill="none" stroke="#1d1a1a" stroke-width="30" d="M190 154 Q214 182 236 172 Q248 164 250 152"/>
+      <path fill="none" stroke="#5a93d6" stroke-width="21" d="M190 154 Q214 182 236 172 Q248 164 250 152"/>
+      <circle cx="252" cy="144" r="11" fill="#f6d2b5" stroke="#1d1a1a" stroke-width="5"/>
+    </g>
+  </g>
+</svg>

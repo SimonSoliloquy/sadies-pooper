@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 120 110" width="120" height="110">
+  <!-- a brown swirled poop pile, mild cartoon -->
+  <g stroke="#2a170b" stroke-width="4" stroke-linejoin="round">
+    <path fill="#7b4a26" d="M14 92 C6 92 4 76 18 72 L102 72 C116 76 114 92 106 92 Z"/>
+    <path fill="#8a5530" d="M24 74 C16 72 18 56 32 54 L88 54 C102 56 104 72 96 74 Z"/>
+    <path fill="#99613a" d="M36 56 C30 54 32 40 44 38 L76 38 C88 40 90 54 84 56 Z"/>
+    <path fill="#a86d43" d="M46 40 C44 30 54 22 62 24 C68 14 80 16 76 26 C74 32 70 36 72 40 Z"/>
+    <path fill="none" stroke="#d29a6a" stroke-width="3" stroke-linecap="round" d="M26 80 C40 76 56 76 70 78 M36 62 C46 58 58 58 68 60 M48 46 C54 43 62 43 68 45"/>
+  </g>
+  <g fill="none" stroke="#7fb24a" stroke-width="3" stroke-linecap="round" opacity=".8">
+    <path d="M40 30 C34 24 44 18 38 10"/><path d="M84 32 C78 26 88 20 82 12"/>
+  </g>
+</svg>
