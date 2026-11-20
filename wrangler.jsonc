@@ -1,0 +1,14 @@
+{
+  // Sadie's Pooper at https://simonsoliloquy.com/sadies-pooper/: plain files on Cloudflare (free and
+  // unlimited: no Worker code runs). tools/cf-build.sh puts them in .cf/sadies-pooper/, because the URL
+  // path is the folder path. The routes claim that one path on the simonsoliloquy.com site.
+  "name": "sadies-pooper",
+  "compatibility_date": "2026-11-01",
+  "account_id": "27acccc64187a6a9c27103eadb2eb10f",
+  "workers_dev": false,
+  "assets": { "directory": "./.cf" },
+  "routes": [
+    { "pattern": "simonsoliloquy.com/sadies-pooper", "zone_name": "simonsoliloquy.com" },
+    { "pattern": "simonsoliloquy.com/sadies-pooper/*", "zone_name": "simonsoliloquy.com" }
+  ]
+}

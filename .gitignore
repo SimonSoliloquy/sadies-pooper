@@ -2,3 +2,5 @@
 .DS_Store
 music/raw/
 .env*
+.cf/
+.wrangler/

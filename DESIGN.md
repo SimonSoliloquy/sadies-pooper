@@ -3,7 +3,7 @@
 From the interviews on 2026-11-17 and 2026-11-18. This replaces the first draft. Simon approved it and the numbers on 2026-11-18; the first version went live that day. Later rulings are dated where they appear.
 
 ## What it is
-A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead pooping brown swirled poop piles. Sadie, with long curly blonde hair, chases after them and scoops them up. The screen scrolls on its own from the living room out to the garden gate in about 2 minutes. It's built for phones held sideways and also plays on a computer. It always plays landscape (Simon, 2026-11-18): on a phone held upright the whole game, menu included, is turned sideways so it starts horizontal; turning the phone straightens it out. On Android it also goes full screen and locks sideways when a game starts. It's one `index.html` deployed on Vercel from GitHub, like Linkshot.
+A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead pooping brown swirled poop piles. Sadie, with long curly blonde hair, chases after them and scoops them up. The screen scrolls on its own from the living room out to the garden gate in about 2 minutes. It's built for phones held sideways and also plays on a computer. It always plays landscape (Simon, 2026-11-18): on a phone held upright the whole game, menu included, is turned sideways so it starts horizontal; turning the phone straightens it out. On Android it also goes full screen and locks sideways when a game starts. It's one `index.html`, served as plain files by Cloudflare at https://simonsoliloquy.com/sadies-pooper/ (moved from Vercel on 2026-11-19; the old sadies-pooper.vercel.app address forwards there until about 2026-12-19). Every push to `main` on GitHub publishes it.
 
 ## Feel
 - Silly and mild: cute brown swirl poops, stink lines, no splatter.
@@ -17,7 +17,7 @@ A silly 2D side-on runner, played 1v1. Ky, a medium black dog, runs ahead poopin
 - Play Sadie against a computer Ky, or play Ky against a computer Sadie.
 - Difficulty: Easy, Normal or Hard.
 - 2 players on the same screen: Sadie's controls on the left half, Ky's on the right.
-- Online high scores: a best-Sadie table and a best-Ky table on the shared leaderboard Worker. Scores are multiplied by the difficulty: Easy ×0.75, Normal ×1, Hard ×1.5.
+- Online high scores: a best-Sadie table and a best-Ky table on the shared leaderboard Worker, all time only (the Today boards were dropped on 2026-11-19 to stay inside the free tier). A page load asks each board once; saving a run is one request whose answer carries the new list. Scores are multiplied by the difficulty: Easy ×0.75, Normal ×1, Hard ×1.5.
 
 ## The route
 1. Living room, with the rug and the couch.
